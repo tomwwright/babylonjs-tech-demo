@@ -7,6 +7,11 @@ import {
   Vector3,
   HemisphericLight,
   MeshBuilder,
+  ActionManager,
+  SetValueAction,
+  Color3,
+  StandardMaterial,
+  ExecuteCodeAction,
 } from "@babylonjs/core";
 
 let isInitialised = false;
@@ -39,7 +44,47 @@ export const initialiseBabylonJs = () => {
 
   new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
 
-  MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
+  const sphere = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
+  const material = new StandardMaterial("material", scene);
+  material.diffuseColor = new Color3(0.4, 0.4, 0.4);
+  material.specularColor = new Color3(0.4, 0.4, 0.4);
+  material.emissiveColor = Color3.Purple();
+  sphere.material = material;
+
+  sphere.actionManager = new ActionManager(scene);
+  sphere.actionManager.registerAction(
+    new SetValueAction(
+      ActionManager.OnPointerOverTrigger,
+      sphere.material,
+      "emissiveColor",
+      Color3.White()
+    )
+  );
+
+  const onPointerOver = () => {
+    console.log("pointer over");
+  };
+
+  sphere.actionManager.registerAction(
+    new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, onPointerOver)
+  );
+
+  sphere.actionManager.registerAction(
+    new SetValueAction(
+      ActionManager.OnPointerOutTrigger,
+      sphere.material,
+      "emissiveColor",
+      material.emissiveColor
+    )
+  );
+
+  const onPointerOut = () => {
+    console.log("pointer out");
+  };
+
+  sphere.actionManager.registerAction(
+    new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, onPointerOut)
+  );
 
   // hide/show the Inspector
   window.addEventListener("keydown", (ev) => {
