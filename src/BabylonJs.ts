@@ -13,10 +13,15 @@ import {
   StandardMaterial,
   ExecuteCodeAction,
 } from "@babylonjs/core";
+import { CursorContext } from "./Cursor";
 
 let isInitialised = false;
 
-export const initialiseBabylonJs = () => {
+type InitialiseBabylonJsProps = {
+  cursor: CursorContext;
+};
+
+export const initialiseBabylonJs = ({ cursor }: InitialiseBabylonJsProps) => {
   if (isInitialised) {
     return;
   }
@@ -51,6 +56,14 @@ export const initialiseBabylonJs = () => {
   material.emissiveColor = Color3.Purple();
   sphere.material = material;
 
+  const updateCursor = (event: MouseEvent) => {
+    cursor.setCursor({
+      x: event.clientX,
+      y: event.clientY,
+      active: true,
+    });
+  };
+
   sphere.actionManager = new ActionManager(scene);
   sphere.actionManager.registerAction(
     new SetValueAction(
@@ -63,6 +76,7 @@ export const initialiseBabylonJs = () => {
 
   const onPointerOver = () => {
     console.log("pointer over");
+    window.addEventListener("mousemove", updateCursor);
   };
 
   sphere.actionManager.registerAction(
@@ -80,6 +94,12 @@ export const initialiseBabylonJs = () => {
 
   const onPointerOut = () => {
     console.log("pointer out");
+    window.removeEventListener("mousemove", updateCursor);
+    cursor.setCursor({
+      x: 0,
+      y: 0,
+      active: false,
+    });
   };
 
   sphere.actionManager.registerAction(

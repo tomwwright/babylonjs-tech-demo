@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { initialiseBabylonJs } from "./BabylonJs";
+import { CursorProvider, useCursor } from "./Cursor";
+import { Tooltip } from "./Tooltip";
 
 function App() {
   return (
-    <>
+    <CursorProvider>
       <canvas
         id="babylonjs"
         style={{
@@ -54,14 +56,16 @@ function App() {
       </div>
 
       <BablylonJs />
-    </>
+      <Tooltip />
+    </CursorProvider>
   );
 }
 
 const BablylonJs = () => {
+  const cursor = useCursor();
   useEffect(() => {
-    initialiseBabylonJs();
-  }, []);
+    initialiseBabylonJs({ cursor });
+  }, [cursor]);
 
   return null;
 };
