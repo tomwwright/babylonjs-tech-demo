@@ -1,9 +1,6 @@
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import {
-  Engine,
-  Scene,
-  ArcRotateCamera,
   Vector3,
   HemisphericLight,
   MeshBuilder,
@@ -14,43 +11,46 @@ import {
   ExecuteCodeAction,
   Observable,
 } from "@babylonjs/core";
-import { CursorContext } from "./Cursor";
-import { SceneState } from "./SceneState";
+import { CursorState, useCursor } from "./Cursor";
+import { SceneState, useSceneState } from "./SceneState";
+import { useEffect, useRef } from "react";
+import { BabylonJsContext, useBabylonJs } from "./BabylonJsProvider";
 
-let isInitialised = false;
+export const BablylonJs = () => {
+  const babylonjs = useBabylonJs();
 
-type InitialiseBabylonJsProps = {
-  cursor: CursorContext;
-  observable: Observable<SceneState>;
+  const { setCursor } = useCursor();
+  const { observable } = useSceneState();
+
+  const initialised = useRef(false);
+
+  useEffect(() => {
+    if (!initialised.current) {
+      initialised.current = true;
+
+      initialiseBabylonJs({
+        setCursor,
+        observable,
+        ...babylonjs,
+      });
+    }
+  }, [babylonjs, observable, setCursor]);
+
+  return null;
 };
 
+interface InitialiseBabylonJsProps extends BabylonJsContext {
+  setCursor: (cursor: CursorState) => void;
+  observable: Observable<SceneState>;
+}
+
 export const initialiseBabylonJs = ({
-  cursor,
+  setCursor,
   observable,
+  canvas,
+  camera,
+  scene,
 }: InitialiseBabylonJsProps) => {
-  if (isInitialised) {
-    return;
-  }
-  isInitialised = true;
-
-  const canvas = document.getElementById("babylonjs") as HTMLCanvasElement;
-  if (!canvas) {
-    console.error("Unable to locate canvas element");
-    return;
-  }
-
-  // initialize babylon scene and engine
-  const engine = new Engine(canvas, true);
-  const scene = new Scene(engine);
-
-  const camera: ArcRotateCamera = new ArcRotateCamera(
-    "Camera",
-    Math.PI / 2,
-    Math.PI / 2,
-    2,
-    Vector3.Zero(),
-    scene
-  );
   camera.attachControl(canvas, true);
 
   new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
@@ -63,7 +63,7 @@ export const initialiseBabylonJs = ({
   sphere.material = material;
 
   const updateCursor = (event: MouseEvent) => {
-    cursor.setCursor({
+    setCursor({
       x: event.clientX,
       y: event.clientY,
       active: true,
@@ -101,7 +101,7 @@ export const initialiseBabylonJs = ({
   const onPointerOut = () => {
     console.log("pointer out");
     window.removeEventListener("mousemove", updateCursor);
-    cursor.setCursor({
+    setCursor({
       x: 0,
       y: 0,
       active: false,
@@ -131,10 +131,5 @@ export const initialiseBabylonJs = ({
         scene.debugLayer.show();
       }
     }
-  });
-
-  // run the main render loop
-  engine.runRenderLoop(() => {
-    scene.render();
   });
 };

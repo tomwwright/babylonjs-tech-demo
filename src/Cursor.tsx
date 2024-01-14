@@ -1,12 +1,12 @@
 import * as React from "react";
 
-interface CursorState {
+export interface CursorState {
   x: number;
   y: number;
   active: boolean;
 }
 
-export interface CursorContext extends CursorState {
+interface CursorContext extends CursorState {
   setCursor: (cursor: CursorState) => void;
 }
 

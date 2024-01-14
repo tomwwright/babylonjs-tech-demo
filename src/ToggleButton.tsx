@@ -5,6 +5,7 @@ export const ToggleButton = () => {
 
   const toggleOnOff = () => {
     state.setState({
+      ...state,
       isOn: !state.isOn,
     });
   };
