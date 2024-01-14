@@ -120,4 +120,40 @@ export const initialiseBabylonJs = ({
       material.alpha = 0;
     }
   });
+
+  const sphere2 = MeshBuilder.CreateSphere("sphere2", { diameter: 0.5 }, scene);
+  sphere2.position.x = 1.5;
+  sphere2.position.z = -1;
+  const material2 = new StandardMaterial("material2", scene);
+  material2.diffuseColor = new Color3(0.4, 0.4, 0.4);
+  material2.specularColor = new Color3(0.4, 0.4, 0.4);
+  material2.emissiveColor = Color3.Green();
+  sphere2.material = material2;
+
+  sphere2.actionManager = new ActionManager(scene);
+  sphere2.actionManager.registerAction(
+    new SetValueAction(
+      ActionManager.OnPointerOverTrigger,
+      sphere2.material,
+      "emissiveColor",
+      Color3.White()
+    )
+  );
+
+  sphere2.actionManager.registerAction(
+    new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, onPointerOver)
+  );
+
+  sphere2.actionManager.registerAction(
+    new SetValueAction(
+      ActionManager.OnPointerOutTrigger,
+      sphere2.material,
+      "emissiveColor",
+      material2.emissiveColor
+    )
+  );
+
+  sphere2.actionManager.registerAction(
+    new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, onPointerOut)
+  );
 };
