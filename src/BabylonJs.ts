@@ -12,16 +12,22 @@ import {
   Color3,
   StandardMaterial,
   ExecuteCodeAction,
+  Observable,
 } from "@babylonjs/core";
 import { CursorContext } from "./Cursor";
+import { SceneState } from "./SceneState";
 
 let isInitialised = false;
 
 type InitialiseBabylonJsProps = {
   cursor: CursorContext;
+  observable: Observable<SceneState>;
 };
 
-export const initialiseBabylonJs = ({ cursor }: InitialiseBabylonJsProps) => {
+export const initialiseBabylonJs = ({
+  cursor,
+  observable,
+}: InitialiseBabylonJsProps) => {
   if (isInitialised) {
     return;
   }
@@ -105,6 +111,15 @@ export const initialiseBabylonJs = ({ cursor }: InitialiseBabylonJsProps) => {
   sphere.actionManager.registerAction(
     new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, onPointerOut)
   );
+
+  observable.add((state) => {
+    console.log("from babylon", state);
+    if (state.isOn) {
+      material.alpha = 1;
+    } else {
+      material.alpha = 0;
+    }
+  });
 
   // hide/show the Inspector
   window.addEventListener("keydown", (ev) => {
