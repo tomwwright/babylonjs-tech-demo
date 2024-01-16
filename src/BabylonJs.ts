@@ -201,6 +201,27 @@ export const initialiseBabylonJs = ({
 
   // set up scene objects
 
+  const radius = 1;
+  const spacingX = radius * 1.1 * 1.5;
+  const spacingZ = radius * 1.1 * Math.sqrt(3);
+
+  const template = MeshBuilder.CreateCylinder(
+    "hexagon",
+    { tessellation: 6, height: 0.1, diameter: radius * 2 },
+    scene
+  );
+
+  for (const x of [0, 1, 2, 3, 4]) {
+    for (const z of [0, 1, 2, 3, 4]) {
+      const hexagon = template.clone();
+      const offsetZ = (x % 2) * spacingZ * 0.5;
+      hexagon.position = new Vector3(x * spacingX, 0, z * spacingZ + offsetZ);
+    }
+  }
+
+  scene.removeMesh(template);
+  template.dispose();
+
   const sphere2 = MeshBuilder.CreateSphere("sphere2", { diameter: 0.5 }, scene);
   sphere2.position.x = 1.5;
   sphere2.position.z = -1;
