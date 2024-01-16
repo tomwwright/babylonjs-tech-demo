@@ -4,6 +4,7 @@ import { Tooltip } from "./Tooltip";
 import { SceneStateProvider } from "./SceneState";
 import { ToggleButton } from "./ToggleButton";
 import { BabylonJsProvider } from "./BabylonJsProvider";
+import { EventButton } from "./EventButton";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
                 }}
               >
                 <ToggleButton />
+                <EventButton event="rotate-left">Rotate left</EventButton>
+                <EventButton event="rotate-right">Rotate right</EventButton>
               </div>
               <div style={{ width: "100px", backgroundColor: "red" }}></div>
             </div>

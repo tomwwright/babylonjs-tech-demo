@@ -6,8 +6,10 @@ export interface SceneState {
 }
 
 interface SceneContext extends SceneState {
-  observable: Observable<SceneState>;
+  stateObservable: Observable<SceneState>;
+  eventsObservable: Observable<string>;
   setState: (state: SceneState) => void;
+  sendEvent: (event: string) => void;
 }
 
 const defaultState = {
@@ -16,23 +18,42 @@ const defaultState = {
 
 const SceneContext = React.createContext<SceneContext>({
   ...defaultState,
-  observable: new Observable(),
+  stateObservable: new Observable(),
+  eventsObservable: new Observable(),
   setState: () => {},
+  sendEvent: () => {},
 });
 
 export const useSceneState = () => React.useContext(SceneContext);
 
 export const SceneStateProvider = ({ children }: React.PropsWithChildren) => {
-  const [observable] = React.useState<Observable<SceneState>>(new Observable());
+  const [stateObservable] = React.useState<Observable<SceneState>>(
+    new Observable()
+  );
+  const [eventsObservable] = React.useState<Observable<string>>(
+    new Observable()
+  );
   const [state, setReactState] = React.useState<SceneState>(defaultState);
 
   const setState = (state: SceneState) => {
-    observable.notifyObservers(state);
+    stateObservable.notifyObservers(state);
     setReactState(state);
   };
 
+  const sendEvent = (event: string) => {
+    eventsObservable.notifyObservers(event);
+  };
+
   return (
-    <SceneContext.Provider value={{ ...state, observable, setState }}>
+    <SceneContext.Provider
+      value={{
+        ...state,
+        eventsObservable,
+        stateObservable,
+        setState,
+        sendEvent,
+      }}
+    >
       {children}
     </SceneContext.Provider>
   );

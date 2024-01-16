@@ -1,10 +1,4 @@
-import {
-  ArcRotateCamera,
-  Camera,
-  Engine,
-  Scene,
-  Vector3,
-} from "@babylonjs/core";
+import { ArcRotateCamera, Engine, Scene, Vector3 } from "@babylonjs/core";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,7 +6,7 @@ export interface BabylonJsContext {
   canvas: HTMLCanvasElement;
   engine: Engine;
   scene: Scene;
-  camera: Camera;
+  camera: ArcRotateCamera;
 }
 
 const BabylonJsContext = React.createContext<BabylonJsContext>(
