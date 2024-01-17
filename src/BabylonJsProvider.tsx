@@ -1,4 +1,10 @@
-import { ArcRotateCamera, Engine, Scene, Vector3 } from "@babylonjs/core";
+import {
+  ActionManager,
+  ArcRotateCamera,
+  Engine,
+  Scene,
+  Vector3,
+} from "@babylonjs/core";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -68,6 +74,7 @@ export const BabylonJsCanvas = ({ canvasRef }: BabylonJsCanvasProps) => (
 const initialiseBabylonJs = (canvas: HTMLCanvasElement) => {
   const engine = new Engine(canvas, true);
   const scene = new Scene(engine);
+  scene.actionManager = new ActionManager();
 
   const camera: ArcRotateCamera = new ArcRotateCamera(
     "Camera",

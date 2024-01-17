@@ -59,83 +59,6 @@ export const initialiseBabylonJs = ({
   camera,
   scene,
 }: InitialiseBabylonJsProps) => {
-  // configure camera controls
-
-  camera.attachControl(canvas, true);
-
-  camera.radius = 5;
-  camera.upperRadiusLimit = 10;
-  camera.lowerRadiusLimit = 1.5;
-
-  camera.alpha = Math.PI;
-
-  camera.mapPanning = true;
-  const cameraAngleDegrees = (Math.PI / 180) * 45;
-  camera.lowerBetaLimit = cameraAngleDegrees;
-  camera.upperBetaLimit = cameraAngleDegrees;
-
-  // camera rotation
-
-  const frameRate = 30;
-  const rotate = new Animation(
-    "rotation",
-    "alpha",
-    frameRate,
-    Animation.ANIMATIONTYPE_FLOAT
-  );
-  const easing = new SineEase();
-  easing.setEasingMode(EasingFunction.EASINGMODE_EASEOUT);
-  rotate.setEasingFunction(easing);
-
-  let currentAnimation: Nullable<Animatable>;
-  const rotateCamera = (isLeft: boolean) => {
-    if (currentAnimation) {
-      console.error("cannot rotate when already rotating");
-      return;
-    }
-
-    const onAnimationEnd = () => {
-      currentAnimation = null;
-    };
-
-    const start = camera.alpha;
-    const amount = Math.PI / 3;
-    const end = isLeft ? camera.alpha + amount : camera.alpha - amount;
-
-    rotate.setKeys([
-      {
-        frame: 0,
-        value: start,
-      },
-      {
-        frame: frameRate,
-        value: end,
-      },
-    ]);
-
-    currentAnimation = scene.beginDirectAnimation(
-      camera,
-      [rotate],
-      0,
-      frameRate,
-      false,
-      2, // 2x speed
-      onAnimationEnd
-    );
-  };
-
-  eventsObservable.add((event) => {
-    console.log("from babylon", event);
-    switch (event) {
-      case "rotate-left":
-        rotateCamera(false);
-        break;
-      case "rotate-right":
-        rotateCamera(true);
-        break;
-    }
-  });
-
   // hovering for tooltip
 
   const updateCursor = (event: MouseEvent) => {
@@ -147,12 +70,10 @@ export const initialiseBabylonJs = ({
   };
 
   const onPointerOver = () => {
-    console.log("pointer over");
     window.addEventListener("mousemove", updateCursor);
   };
 
   const onPointerOut = () => {
-    console.log("pointer out");
     window.removeEventListener("mousemove", updateCursor);
     setCursor({
       x: 0,
@@ -166,8 +87,9 @@ export const initialiseBabylonJs = ({
   new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
 
   const radius = 1;
-  const spacingX = radius * 1.1 * 1.5;
-  const spacingZ = radius * 1.1 * Math.sqrt(3);
+  const spacing = 1.02;
+  const spacingX = radius * spacing * 1.5;
+  const spacingZ = radius * spacing * Math.sqrt(3);
 
   const template = MeshBuilder.CreateCylinder(
     "hexagon",
@@ -176,12 +98,11 @@ export const initialiseBabylonJs = ({
   );
   const hexagonMaterial = new StandardMaterial("hexagon", scene);
   const highlightColor = new Color3(0.2, 0.2, 0.2);
-  const mapSize = 5;
+  const mapSize = 10;
   const map: Mesh[][] = [];
 
   const setEmissiveColorAtPosition = (x: number, z: number, color: Color3) => {
     const material = map[x][z].material as StandardMaterial;
-    console.log(material.emissiveColor);
     material.emissiveColor = color;
   };
 
@@ -250,6 +171,111 @@ export const initialiseBabylonJs = ({
       material.alpha = 1;
     } else {
       material.alpha = 0;
+    }
+  });
+
+  // configure camera controls
+
+  camera.attachControl(canvas, true);
+
+  camera.radius = 5;
+  camera.upperRadiusLimit = 12;
+  camera.lowerRadiusLimit = 1.5;
+
+  camera.alpha = Math.PI;
+
+  camera.mapPanning = true;
+  const cameraAngleDegrees = (Math.PI / 180) * 45;
+  camera.lowerBetaLimit = cameraAngleDegrees;
+  camera.upperBetaLimit = cameraAngleDegrees;
+
+  // max camera bounds
+
+  const maxX = mapSize * spacingX;
+  const maxZ = mapSize * spacingZ;
+
+  const checkCameraTargetBounds = () => {
+    if (camera.target.x < 0) {
+      camera.target.x = 0;
+    }
+    if (camera.target.x > maxX) {
+      camera.target.x = maxX;
+    }
+
+    if (camera.target.z < 0) {
+      camera.target.z = 0;
+    }
+    if (camera.target.z > maxZ) {
+      camera.target.z = maxZ;
+    }
+  };
+
+  scene.actionManager.registerAction(
+    new ExecuteCodeAction(
+      ActionManager.OnEveryFrameTrigger,
+      checkCameraTargetBounds
+    )
+  );
+
+  // camera rotation
+
+  const frameRate = 30;
+  const rotate = new Animation(
+    "rotation",
+    "alpha",
+    frameRate,
+    Animation.ANIMATIONTYPE_FLOAT
+  );
+  const easing = new SineEase();
+  easing.setEasingMode(EasingFunction.EASINGMODE_EASEOUT);
+  rotate.setEasingFunction(easing);
+
+  let currentAnimation: Nullable<Animatable>;
+  const rotateCamera = (isLeft: boolean) => {
+    if (currentAnimation) {
+      console.error("cannot rotate when already rotating");
+      return;
+    }
+
+    const onAnimationEnd = () => {
+      currentAnimation = null;
+    };
+
+    const start = camera.alpha;
+    const amount = Math.PI / 3;
+    const end = isLeft ? camera.alpha + amount : camera.alpha - amount;
+
+    rotate.setKeys([
+      {
+        frame: 0,
+        value: start,
+      },
+      {
+        frame: frameRate,
+        value: end,
+      },
+    ]);
+
+    currentAnimation = scene.beginDirectAnimation(
+      camera,
+      [rotate],
+      0,
+      frameRate,
+      false,
+      2, // 2x speed
+      onAnimationEnd
+    );
+  };
+
+  eventsObservable.add((event) => {
+    console.log("from babylon", event);
+    switch (event) {
+      case "rotate-left":
+        rotateCamera(false);
+        break;
+      case "rotate-right":
+        rotateCamera(true);
+        break;
     }
   });
 };
