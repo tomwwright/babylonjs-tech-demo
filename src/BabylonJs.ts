@@ -15,6 +15,7 @@ import {
   EasingFunction,
   SineEase,
   Nullable,
+  Mesh,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
@@ -210,17 +211,74 @@ export const initialiseBabylonJs = ({
     { tessellation: 6, height: 0.1, diameter: radius * 2 },
     scene
   );
+  const hexagonMaterial = new StandardMaterial("hexagon", scene);
+  const highlightColor = new Color3(0.2, 0.2, 0.2);
+  const mapSize = 5;
+  const map: Mesh[][] = [];
 
-  for (const x of [0, 1, 2, 3, 4]) {
-    for (const z of [0, 1, 2, 3, 4]) {
+  const setEmissiveColorAtPosition = (x: number, z: number, color: Color3) => {
+    const material = map[x][z].material as StandardMaterial;
+    console.log(material.emissiveColor);
+    material.emissiveColor = color;
+  };
+
+  const resetEmissiveColorAtPosition = (x: number, z: number) =>
+    setEmissiveColorAtPosition(x, z, hexagonMaterial.emissiveColor);
+
+  const onPointerOverHexagon = (x: number, z: number) => {
+    for (let i = 0; i < mapSize; ++i) {
+      setEmissiveColorAtPosition(x, i, highlightColor);
+      setEmissiveColorAtPosition(i, z, highlightColor);
+    }
+    setEmissiveColorAtPosition(x, z, Color3.Green());
+  };
+
+  const onPointerOutHexagon = (x: number, z: number) => {
+    for (let i = 0; i < mapSize; ++i) {
+      resetEmissiveColorAtPosition(x, i);
+      resetEmissiveColorAtPosition(i, z);
+    }
+  };
+
+  for (let x = 0; x < mapSize; ++x) {
+    const row: Mesh[] = [];
+    map.push(row);
+    for (let z = 0; z < mapSize; ++z) {
       const hexagon = template.clone();
+      hexagon.material = hexagonMaterial.clone(`hexagon${x}${z}`);
       const offsetZ = (x % 2) * spacingZ * 0.5;
       hexagon.position = new Vector3(x * spacingX, 0, z * spacingZ + offsetZ);
+
+      hexagon.actionManager = new ActionManager(scene);
+
+      hexagon.actionManager.registerAction(
+        new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, () =>
+          onPointerOverHexagon(x, z)
+        )
+      );
+
+      hexagon.actionManager.registerAction(
+        new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, onPointerOver)
+      );
+
+      hexagon.actionManager.registerAction(
+        new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, () =>
+          onPointerOutHexagon(x, z)
+        )
+      );
+
+      hexagon.actionManager.registerAction(
+        new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, onPointerOut)
+      );
+
+      row.push(hexagon);
     }
   }
 
   scene.removeMesh(template);
   template.dispose();
+
+  // spheres
 
   const sphere2 = MeshBuilder.CreateSphere("sphere2", { diameter: 0.5 }, scene);
   sphere2.position.x = 1.5;
