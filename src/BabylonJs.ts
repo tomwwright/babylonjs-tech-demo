@@ -15,6 +15,10 @@ import {
   SineEase,
   Nullable,
   Mesh,
+  Tools,
+  SceneLoader,
+  DirectionalLight,
+  CascadedShadowGenerator,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
@@ -82,9 +86,22 @@ export const initialiseBabylonJs = ({
     });
   };
 
-  // set up map of hexagons
+  // set up lighting
 
-  new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
+  const light = new DirectionalLight(
+    "light",
+    new Vector3(1, -1, 1).normalize(),
+    scene
+  );
+  light.autoUpdateExtends = true;
+  light.autoCalcShadowZBounds = true;
+  new HemisphericLight("ambient", new Vector3(1, 1, 0), scene);
+
+  const shadowGenerator = new CascadedShadowGenerator(4096, light);
+  shadowGenerator.autoCalcDepthBounds = true;
+  shadowGenerator.bias = 0.01;
+
+  // set up map of hexagons
 
   const radius = 1;
   const spacing = 1.02;
@@ -278,4 +295,53 @@ export const initialiseBabylonJs = ({
         break;
     }
   });
+
+  // load assets
+
+  const loadAssets = async () => {
+    const assetArrayBuffer = await Tools.LoadFileAsync(
+      "/grass_forest.glb",
+      true
+    );
+    const assetBlob = new Blob([assetArrayBuffer]);
+    const assetUrl = URL.createObjectURL(assetBlob);
+
+    await SceneLoader.AppendAsync(
+      assetUrl,
+      undefined,
+      scene,
+      undefined,
+      ".glb"
+    );
+
+    const forest = scene.getMeshByName("__root__");
+    if (!forest) {
+      console.log("unable to find loaded forest mesh!");
+      return;
+    }
+    forest.rotate(Vector3.Up(), Math.PI / 6);
+    forest.scalingDeterminant = 1.7;
+
+    // put forests on each space
+    for (let x = 0; x < mapSize; ++x) {
+      for (let z = 0; z < mapSize; ++z) {
+        const hexagon = map[x][z];
+        const forestClone = forest.clone(`forest${x}${z}`, null);
+        console.log(forestClone);
+        // why is this nullable?
+        if (forestClone) {
+          forestClone.receiveShadows = true;
+          for (const child of forestClone.getChildMeshes()) {
+            child.receiveShadows = true;
+          }
+          shadowGenerator.addShadowCaster(forestClone, true);
+          forestClone.position = hexagon.position;
+        }
+      }
+    }
+
+    console.log("loaded!");
+  };
+
+  loadAssets();
 };
