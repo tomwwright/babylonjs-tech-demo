@@ -19,6 +19,7 @@ import {
   SceneLoader,
   DirectionalLight,
   CascadedShadowGenerator,
+  SSAO2RenderingPipeline,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
@@ -344,4 +345,28 @@ export const initialiseBabylonJs = ({
   };
 
   loadAssets();
+
+  // ambient occlusion
+
+  const ssao = new SSAO2RenderingPipeline("ssao", scene, 1);
+  ssao.samples = 16;
+  ssao.bilateralSoften = 0.1;
+  ssao.totalStrength = 1.0;
+  ssao.radius = 0.5;
+
+  ssao;
+  scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline(
+    "ssao",
+    camera
+  );
+
+  // SSAO debugging
+
+  //ssao.bypassBlur = true;
+
+  // scene.postProcessRenderPipelineManager.disableEffectInPipeline(
+  //   "ssao",
+  //   ssao.SSAOCombineRenderEffect,
+  //   camera
+  // );
 };
