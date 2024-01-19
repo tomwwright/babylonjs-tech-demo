@@ -109,6 +109,7 @@ export const initialiseBabylonJs = ({
   const shadowGenerator = new CascadedShadowGenerator(4096, light);
   shadowGenerator.autoCalcDepthBounds = true;
   shadowGenerator.bias = 0.01;
+  shadowGenerator.usePercentageCloserFiltering = true;
 
   // set up map of hexagons
 
@@ -119,35 +120,43 @@ export const initialiseBabylonJs = ({
 
   const template = MeshBuilder.CreateCylinder(
     "hexagon",
-    { tessellation: 6, height: 0.1, diameter: radius * 2 },
+    { tessellation: 6, height: 1, diameter: radius * 2 },
     scene
   );
   const hexagonMaterial = new StandardMaterial("hexagon", scene);
   hexagonMaterial.specularColor = Color3.Black();
-  const highlightColor = new Color3(0.2, 0.2, 0.2);
+  hexagonMaterial.diffuseColor = Color3.Black();
+  hexagonMaterial.alpha = 0;
+  const highlightColor = Color3.White();
   const mapSize = 10;
   const map: Mesh[][] = [];
 
-  const setEmissiveColorAtPosition = (x: number, z: number, color: Color3) => {
+  const setColorAndAlphaAtPosition = (
+    x: number,
+    z: number,
+    color: Color3,
+    alpha: number
+  ) => {
     const material = map[x][z].material as StandardMaterial;
-    material.emissiveColor = color;
+    material.alpha = alpha;
+    material.diffuseColor = color;
   };
 
-  const resetEmissiveColorAtPosition = (x: number, z: number) =>
-    setEmissiveColorAtPosition(x, z, hexagonMaterial.emissiveColor);
+  const resetColorAndAlphaAtPosition = (x: number, z: number) =>
+    setColorAndAlphaAtPosition(x, z, hexagonMaterial.emissiveColor, 0);
 
   const onPointerOverHexagon = (x: number, z: number) => {
     for (let i = 0; i < mapSize; ++i) {
-      setEmissiveColorAtPosition(x, i, highlightColor);
-      setEmissiveColorAtPosition(i, z, highlightColor);
+      setColorAndAlphaAtPosition(x, i, highlightColor, 0.1);
+      setColorAndAlphaAtPosition(i, z, highlightColor, 0.1);
     }
-    setEmissiveColorAtPosition(x, z, Color3.Green());
+    setColorAndAlphaAtPosition(x, z, Color3.Green(), 0.4);
   };
 
   const onPointerOutHexagon = (x: number, z: number) => {
     for (let i = 0; i < mapSize; ++i) {
-      resetEmissiveColorAtPosition(x, i);
-      resetEmissiveColorAtPosition(i, z);
+      resetColorAndAlphaAtPosition(x, i);
+      resetColorAndAlphaAtPosition(i, z);
     }
   };
 
@@ -158,7 +167,7 @@ export const initialiseBabylonJs = ({
       const hexagon = template.clone();
       hexagon.material = hexagonMaterial.clone(`hexagon${x}${z}`);
       const offsetZ = (x % 2) * spacingZ * 0.5;
-      hexagon.position = new Vector3(x * spacingX, 0, z * spacingZ + offsetZ);
+      hexagon.position = new Vector3(x * spacingX, 0.5, z * spacingZ + offsetZ);
 
       hexagon.actionManager = new ActionManager(scene);
 
@@ -188,18 +197,6 @@ export const initialiseBabylonJs = ({
 
   scene.removeMesh(template);
   template.dispose();
-
-  // demo reacting to state changes from react
-
-  stateObservable.add((state) => {
-    console.log("from babylon", state);
-    const material = map[0][0].material as StandardMaterial;
-    if (state.isOn) {
-      material.alpha = 1;
-    } else {
-      material.alpha = 0;
-    }
-  });
 
   // configure camera controls
 
@@ -344,6 +341,17 @@ export const initialiseBabylonJs = ({
 
   amblientLight.excludedMeshes.push(ground);
 
+  // demo reacting to state changes from react
+
+  stateObservable.add((state) => {
+    console.log("from babylon", state);
+    if (state.isOn) {
+      groundMaterial.alpha = 1;
+    } else {
+      groundMaterial.alpha = 0;
+    }
+  });
+
   // load assets
 
   const loadAssets = async () => {
@@ -384,7 +392,11 @@ export const initialiseBabylonJs = ({
             mirrorTexture.renderList?.push(child);
           }
           shadowGenerator.addShadowCaster(forestClone, true);
-          forestClone.position = hexagon.position;
+          forestClone.position = new Vector3(
+            hexagon.position.x,
+            0,
+            hexagon.position.z
+          );
         }
       }
     }
