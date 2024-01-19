@@ -20,6 +20,8 @@ import {
   DirectionalLight,
   CascadedShadowGenerator,
   SSAO2RenderingPipeline,
+  DefaultRenderingPipeline,
+  DepthOfFieldEffectBlurLevel,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
@@ -345,6 +347,33 @@ export const initialiseBabylonJs = ({
   };
 
   loadAssets();
+
+  // set up rendering
+
+  const renderer = new DefaultRenderingPipeline("renderer", true, scene, [
+    camera,
+  ]);
+
+  // anti aliasing
+
+  renderer.fxaaEnabled = true;
+
+  // depth of field
+
+  renderer.depthOfFieldEnabled = true;
+  renderer.depthOfField.fStop = 1.2;
+  renderer.depthOfFieldBlurLevel = DepthOfFieldEffectBlurLevel.High;
+
+  const setCameraFocalLength = () => {
+    renderer.depthOfField.focusDistance = camera.radius * 1000;
+  };
+
+  scene.actionManager.registerAction(
+    new ExecuteCodeAction(
+      ActionManager.OnEveryFrameTrigger,
+      setCameraFocalLength
+    )
+  );
 
   // ambient occlusion
 

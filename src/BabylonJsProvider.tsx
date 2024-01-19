@@ -81,7 +81,7 @@ const initialiseBabylonJs = (canvas: HTMLCanvasElement) => {
     Math.PI / 2,
     Math.PI / 2,
     2,
-    Vector3.Zero(),
+    new Vector3(0, 0.75, 0),
     scene
   );
 
