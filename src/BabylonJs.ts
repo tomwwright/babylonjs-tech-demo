@@ -22,6 +22,8 @@ import {
   SSAO2RenderingPipeline,
   DefaultRenderingPipeline,
   DepthOfFieldEffectBlurLevel,
+  MirrorTexture,
+  Plane,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
@@ -98,7 +100,11 @@ export const initialiseBabylonJs = ({
   );
   light.autoUpdateExtends = true;
   light.autoCalcShadowZBounds = true;
-  new HemisphericLight("ambient", new Vector3(1, 1, 0), scene);
+  const amblientLight = new HemisphericLight(
+    "ambient",
+    new Vector3(1, 1, 0),
+    scene
+  );
 
   const shadowGenerator = new CascadedShadowGenerator(4096, light);
   shadowGenerator.autoCalcDepthBounds = true;
@@ -117,6 +123,7 @@ export const initialiseBabylonJs = ({
     scene
   );
   const hexagonMaterial = new StandardMaterial("hexagon", scene);
+  hexagonMaterial.specularColor = Color3.Black();
   const highlightColor = new Color3(0.2, 0.2, 0.2);
   const mapSize = 10;
   const map: Mesh[][] = [];
@@ -198,8 +205,9 @@ export const initialiseBabylonJs = ({
 
   camera.attachControl(canvas, true);
 
+  const maxCameraDistance = 12;
   camera.radius = 5;
-  camera.upperRadiusLimit = 12;
+  camera.upperRadiusLimit = maxCameraDistance;
   camera.lowerRadiusLimit = 1.5;
 
   camera.alpha = Math.PI;
@@ -299,6 +307,43 @@ export const initialiseBabylonJs = ({
     }
   });
 
+  // reflective ground
+
+  const skybox = MeshBuilder.CreateBox("skybox", { size: 100.0 }, scene);
+  skybox.position = new Vector3(maxX / 2, -2, maxZ / 2);
+  const skyboxMaterial = new StandardMaterial("skybox", scene);
+  skyboxMaterial.emissiveColor = new Color3(0.3, 0.3, 0.7);
+  skyboxMaterial.backFaceCulling = false;
+  skyboxMaterial.disableLighting = true;
+  skybox.material = skyboxMaterial;
+
+  // sin(A) = perp / hyp
+  const visibleSurroundingDistance =
+    Math.sin(cameraAngleDegrees) * maxCameraDistance * 2.25;
+
+  const width = maxX + 2 * visibleSurroundingDistance;
+  const height = maxZ + 2 * visibleSurroundingDistance;
+
+  const ground = MeshBuilder.CreateGround("ground", { width, height });
+  ground.position = new Vector3(maxX / 2, 0, maxZ / 2);
+  ground.receiveShadows = true;
+  const groundMaterial = new StandardMaterial("ground");
+  const mirrorTexture = new MirrorTexture("mirror", { ratio: 0.25 }, scene);
+  mirrorTexture.mirrorPlane = Plane.FromPositionAndNormal(
+    ground.position,
+    ground.getFacetNormal(0).scale(-1)
+  );
+  mirrorTexture.renderList = [skybox];
+  mirrorTexture.adaptiveBlurKernel = 64;
+  //groundMaterial.ambientColor
+
+  groundMaterial.reflectionTexture = mirrorTexture;
+  groundMaterial.diffuseColor = new Color3(0.2, 0.2, 0.3);
+  groundMaterial.specularColor = new Color3(0.2, 0.2, 0.3);
+  ground.material = groundMaterial;
+
+  amblientLight.excludedMeshes.push(ground);
+
   // load assets
 
   const loadAssets = async () => {
@@ -336,6 +381,7 @@ export const initialiseBabylonJs = ({
           forestClone.receiveShadows = true;
           for (const child of forestClone.getChildMeshes()) {
             child.receiveShadows = true;
+            mirrorTexture.renderList?.push(child);
           }
           shadowGenerator.addShadowCaster(forestClone, true);
           forestClone.position = hexagon.position;
@@ -383,7 +429,6 @@ export const initialiseBabylonJs = ({
   ssao.totalStrength = 1.0;
   ssao.radius = 0.5;
 
-  ssao;
   scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline(
     "ssao",
     camera
