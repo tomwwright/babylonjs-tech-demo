@@ -389,9 +389,14 @@ export const initialiseBabylonJs = ({
           forestClone.receiveShadows = true;
           for (const child of forestClone.getChildMeshes()) {
             child.receiveShadows = true;
+
+            // comment me for reflections
             mirrorTexture.renderList?.push(child);
           }
+
+          // comment me for shadows
           shadowGenerator.addShadowCaster(forestClone, true);
+
           forestClone.position = new Vector3(
             hexagon.position.x,
             0,
