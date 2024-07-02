@@ -64,6 +64,7 @@ export const initialiseBabylonJs = ({
   setCursor,
   stateObservable,
   eventsObservable,
+  engine,
   canvas,
   camera,
   scene,
@@ -332,7 +333,6 @@ export const initialiseBabylonJs = ({
   );
   mirrorTexture.renderList = [skybox];
   mirrorTexture.adaptiveBlurKernel = 64;
-  //groundMaterial.ambientColor
 
   groundMaterial.reflectionTexture = mirrorTexture;
   groundMaterial.diffuseColor = new Color3(0.2, 0.2, 0.3);
@@ -340,6 +340,15 @@ export const initialiseBabylonJs = ({
   ground.material = groundMaterial;
 
   amblientLight.excludedMeshes.push(ground);
+
+  eventsObservable.add((event) => {
+    if(event === "toggle-hardware-scaling-level") {
+      const scalingLevels = [1, 2, 4]
+      const i = scalingLevels.findIndex(level => level === engine.getHardwareScalingLevel())
+      const newHardwareScalingLevel = scalingLevels[(i + 1) % scalingLevels.length]
+      engine.setHardwareScalingLevel(newHardwareScalingLevel)
+    }
+  });
 
   // demo reacting to state changes from react
 
@@ -453,11 +462,26 @@ export const initialiseBabylonJs = ({
 
   // SSAO debugging
 
-  //ssao.bypassBlur = true;
+  stateObservable.add((state) => {
+    if(state.isSSAOOnly) {
+      scene.postProcessRenderPipelineManager.enableEffectInPipeline(
+        "ssao",
+        ssao.SSAOCombineRenderEffect,
+        camera
+      );
+    } else {
+      scene.postProcessRenderPipelineManager.disableEffectInPipeline(
+        "ssao",
+        ssao.SSAOCombineRenderEffect,
+        camera
+      );
+    }
+  })
 
-  // scene.postProcessRenderPipelineManager.disableEffectInPipeline(
-  //   "ssao",
-  //   ssao.SSAOCombineRenderEffect,
-  //   camera
-  // );
+  eventsObservable.add((event) => {
+    if(event === "toggle-ssao-blur") {
+      ssao.bypassBlur = !ssao.bypassBlur
+    }
+  })
+  // 
 };

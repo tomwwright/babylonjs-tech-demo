@@ -2,6 +2,7 @@ import { Observable } from "@babylonjs/core";
 import * as React from "react";
 
 export interface SceneState {
+  isSSAOOnly: boolean;
   isOn: boolean;
 }
 
@@ -13,6 +14,7 @@ interface SceneContext extends SceneState {
 }
 
 const defaultState = {
+  isSSAOOnly: true,
   isOn: true,
 } satisfies SceneState;
 
