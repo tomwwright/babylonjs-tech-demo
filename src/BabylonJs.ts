@@ -346,9 +346,9 @@ export const initialiseBabylonJs = ({
   stateObservable.add((state) => {
     console.log("from babylon", state);
     if (state.isOn) {
-      groundMaterial.alpha = 1;
+      ground.setEnabled(true)
     } else {
-      groundMaterial.alpha = 0;
+      ground.setEnabled(false)
     }
   });
 
