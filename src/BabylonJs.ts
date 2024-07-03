@@ -69,6 +69,13 @@ export const initialiseBabylonJs = ({
   camera,
   scene,
 }: InitialiseBabylonJsProps) => {
+  // reporting fps
+
+  setInterval(() => {
+    const fps = engine.getFps()
+    eventsObservable.notifyObservers(`report-fps;${fps}`)
+  }, 2000)
+  
   // hovering for tooltip
 
   const updateCursor = (event: MouseEvent) => {

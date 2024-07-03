@@ -6,6 +6,7 @@ import { ToggleButton } from "./ToggleButton";
 import { BabylonJsProvider } from "./BabylonJsProvider";
 import { EventButton } from "./EventButton";
 import { ToggleSSAOOnlyButton } from "./ToggleSSAOButton";
+import { FpsCounter } from "./FpsCounter";
 
 function App() {
   return (
@@ -62,7 +63,9 @@ function App() {
                 height: "50px",
                 backgroundColor: "green",
               }}
-            />
+            >
+              <p><FpsCounter /></p>
+            </div>
           </div>
           <BablylonJs />
         </SceneStateProvider>
