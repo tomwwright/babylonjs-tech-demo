@@ -405,7 +405,6 @@ export const initialiseBabylonJs = ({
       for (let z = 0; z < mapSize; ++z) {
         const hexagon = map[x][z];
         const forestClone = forest.clone(`forest${x}${z}`, null);
-        console.log(forestClone);
         // why is this nullable?
         if (forestClone) {
           forestClone.receiveShadows = true;
@@ -515,5 +514,6 @@ export const initialiseBabylonJs = ({
       ssao.bypassBlur = !ssao.bypassBlur
     }
   })
-  // 
+  
+  console.log("initialised babylonjs!")
 };
