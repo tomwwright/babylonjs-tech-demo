@@ -119,6 +119,12 @@ export const initialiseBabylonJs = ({
   shadowGenerator.bias = 0.01;
   shadowGenerator.usePercentageCloserFiltering = true;
 
+  eventsObservable.add((event) => {
+    if(event === "toggle-shadows") {
+      light.shadowEnabled = !light.shadowEnabled;
+    }
+  })
+
   // set up map of hexagons
 
   const radius = 1;

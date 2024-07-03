@@ -53,6 +53,7 @@ function App() {
                 <EventButton event="toggle-hardware-scaling-level">Cycle scaling</EventButton>
                 <ToggleSSAOOnlyButton />
                 <EventButton event="toggle-ssao-blur">Toggle SSAO blur</EventButton>
+                <EventButton event="toggle-shadows">Toggle shadows</EventButton>
               </div>
               <div style={{ width: "100px", backgroundColor: "red" }}></div>
             </div>
