@@ -24,6 +24,7 @@ import {
   DepthOfFieldEffectBlurLevel,
   MirrorTexture,
   Plane,
+  RenderTargetTexture,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
@@ -368,9 +369,13 @@ export const initialiseBabylonJs = ({
   stateObservable.add((state) => {
     console.log("from babylon", state);
     if (state.isOn) {
-      ground.setEnabled(true)
+      groundMaterial.reflectionTexture = mirrorTexture
+      mirrorTexture.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYFRAME
+      groundMaterial.diffuseColor = new Color3(0.2, 0.2, 0.3);
     } else {
-      ground.setEnabled(false)
+      groundMaterial.reflectionTexture = null;
+      mirrorTexture.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE
+      groundMaterial.diffuseColor = new Color3(0.7, 0.7, 0.9);
     }
   });
 
