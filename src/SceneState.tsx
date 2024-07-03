@@ -2,7 +2,7 @@ import { Observable } from "@babylonjs/core";
 import * as React from "react";
 
 export interface SceneState {
-  isSSAOOnly: boolean;
+  ssao: "enabled" | "disabled" | "ssao-only"
   isOn: boolean;
 }
 
@@ -14,7 +14,7 @@ interface SceneContext extends SceneState {
 }
 
 const defaultState = {
-  isSSAOOnly: true,
+  ssao: "enabled",
   isOn: true,
 } satisfies SceneState;
 

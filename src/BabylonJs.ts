@@ -475,19 +475,38 @@ export const initialiseBabylonJs = ({
 
   // SSAO debugging
 
+  let currentSSAO = "enabled"
   stateObservable.add((state) => {
-    if(state.isSSAOOnly) {
+    if(state.ssao === currentSSAO) {
+      return
+    }
+    currentSSAO = state.ssao
+    // order of cases here is specific, not good code >:(
+    switch(state.ssao) {
+      case "enabled":
+        scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline(
+            "ssao",
+            camera
+          );
       scene.postProcessRenderPipelineManager.enableEffectInPipeline(
         "ssao",
         ssao.SSAOCombineRenderEffect,
         camera
       );
-    } else {
+        break;
+      case "ssao-only":
       scene.postProcessRenderPipelineManager.disableEffectInPipeline(
         "ssao",
         ssao.SSAOCombineRenderEffect,
         camera
       );
+        break;
+      case "disabled":
+        scene.postProcessRenderPipelineManager.detachCamerasFromRenderPipeline(
+          "ssao",
+          camera
+        );
+        break;
     }
   })
 

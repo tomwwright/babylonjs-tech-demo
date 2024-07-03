@@ -1,16 +1,18 @@
-import { useSceneState } from "./SceneState";
+import { SceneState, useSceneState } from "./SceneState";
 
-export const ToggleSSAOOnlyButton = () => {
+export const ToggleSSAOButton = () => {
   const state = useSceneState();
 
-  const toggleOnOff = () => {
+  const toggle = () => {
+    const ssaoStates: SceneState["ssao"][] = ["enabled", "ssao-only", "disabled"]
+    const ssao = ssaoStates[(ssaoStates.findIndex(s => s === state.ssao) +1) % ssaoStates.length]
     state.setState({
       ...state,
-      isSSAOOnly: !state.isSSAOOnly,
+      ssao,
     });
   };
 
   return (
-    <button onClick={toggleOnOff}>SSAO Only: {state.isSSAOOnly ? "OFF" : "ON"}</button>
+    <button onClick={toggle}>SSAO: {state.ssao}</button>
   );
 };

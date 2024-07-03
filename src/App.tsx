@@ -5,7 +5,7 @@ import { SceneStateProvider } from "./SceneState";
 import { ToggleButton } from "./ToggleButton";
 import { BabylonJsProvider } from "./BabylonJsProvider";
 import { EventButton } from "./EventButton";
-import { ToggleSSAOOnlyButton } from "./ToggleSSAOButton";
+import { ToggleSSAOButton } from "./ToggleSSAOButton";
 import { FpsCounter } from "./FpsCounter";
 
 function App() {
@@ -51,7 +51,7 @@ function App() {
                 <EventButton event="rotate-left">Rotate left</EventButton>
                 <EventButton event="rotate-right">Rotate right</EventButton>
                 <EventButton event="toggle-hardware-scaling-level">Cycle scaling</EventButton>
-                <ToggleSSAOOnlyButton />
+                <ToggleSSAOButton />
                 <EventButton event="toggle-ssao-blur">Toggle SSAO blur</EventButton>
                 <EventButton event="toggle-shadows">Toggle shadows</EventButton>
               </div>
