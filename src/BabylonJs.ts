@@ -114,11 +114,14 @@ export const initialiseBabylonJs = ({
     new Vector3(1, 1, 0),
     scene
   );
+  // configure shadows
 
   const shadowGenerator = new CascadedShadowGenerator(4096, light);
-  shadowGenerator.autoCalcDepthBounds = true;
+  shadowGenerator.autoCalcDepthBounds = false;
   shadowGenerator.bias = 0.01;
   shadowGenerator.usePercentageCloserFiltering = true;
+  shadowGenerator.depthClamp = true;
+  shadowGenerator.shadowMaxZ = 60;
 
   eventsObservable.add((event) => {
     if(event === "toggle-shadows") {
@@ -229,6 +232,8 @@ export const initialiseBabylonJs = ({
   camera.lowerBetaLimit = cameraAngleDegrees;
   camera.upperBetaLimit = cameraAngleDegrees;
 
+  camera.maxZ = 60;
+
   // max camera bounds
 
   const maxX = mapSize * spacingX;
@@ -321,7 +326,7 @@ export const initialiseBabylonJs = ({
 
   // reflective ground
 
-  const skybox = MeshBuilder.CreateBox("skybox", { size: 100.0 }, scene);
+  const skybox = MeshBuilder.CreateBox("skybox", { size: 50 }, scene);
   skybox.position = new Vector3(maxX / 2, -2, maxZ / 2);
   const skyboxMaterial = new StandardMaterial("skybox", scene);
   skyboxMaterial.emissiveColor = new Color3(0.3, 0.3, 0.7);
