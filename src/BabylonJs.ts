@@ -114,11 +114,13 @@ export const initialiseBabylonJs = ({
     new Vector3(1, 1, 0),
     scene
   );
+
   // configure shadows
 
-  const shadowGenerator = new CascadedShadowGenerator(4096, light);
+  const shadowGenerator = new CascadedShadowGenerator(1024, light);
   shadowGenerator.autoCalcDepthBounds = false;
   shadowGenerator.bias = 0.01;
+  shadowGenerator.numCascades = 2;
   shadowGenerator.usePercentageCloserFiltering = true;
   shadowGenerator.depthClamp = true;
   shadowGenerator.shadowMaxZ = 60;
