@@ -162,10 +162,10 @@ export const initialiseBabylonJs = ({
 
   const onPointerOverHexagon = (x: number, z: number) => {
     for (let i = 0; i < mapSize; ++i) {
-      setColorAndAlphaAtPosition(x, i, highlightColor, 0.1);
-      setColorAndAlphaAtPosition(i, z, highlightColor, 0.1);
+      setColorAndAlphaAtPosition(x, i, highlightColor, 0.05);
+      setColorAndAlphaAtPosition(i, z, highlightColor, 0.05);
     }
-    setColorAndAlphaAtPosition(x, z, Color3.Green(), 0.4);
+    setColorAndAlphaAtPosition(x, z, Color3.Green(), 0.05);
   };
 
   const onPointerOutHexagon = (x: number, z: number) => {
