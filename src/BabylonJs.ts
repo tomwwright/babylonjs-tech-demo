@@ -122,7 +122,7 @@ export const initialiseBabylonJs = ({
   shadowGenerator.bias = 0.01;
   shadowGenerator.numCascades = 2;
   shadowGenerator.usePercentageCloserFiltering = true;
-  shadowGenerator.depthClamp = true;
+  shadowGenerator.depthClamp = false;
   shadowGenerator.shadowMaxZ = 60;
 
   eventsObservable.add((event) => {
