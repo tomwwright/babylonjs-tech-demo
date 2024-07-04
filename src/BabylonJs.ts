@@ -347,6 +347,7 @@ export const initialiseBabylonJs = ({
   );
   mirrorTexture.renderList = [skybox];
   mirrorTexture.adaptiveBlurKernel = 64;
+  mirrorTexture.noPrePassRenderer = true;
 
   groundMaterial.reflectionTexture = mirrorTexture;
   groundMaterial.diffuseColor = new Color3(0.2, 0.2, 0.3);
