@@ -7,6 +7,8 @@ export const Tooltip = () => {
     return null;
   }
 
+  const text = `(${cursor.mapX}, ${cursor.mapZ})`
+
   return (
     <div
       style={{
@@ -23,7 +25,7 @@ export const Tooltip = () => {
         overflow: "hidden",
       }}
     >
-      hello
+      {text}
     </div>
   );
 };

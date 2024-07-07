@@ -79,27 +79,38 @@ export const initialiseBabylonJs = ({
   
   // hovering for tooltip
 
-  const updateCursor = (event: MouseEvent) => {
-    setCursor({
-      x: event.clientX,
-      y: event.clientY,
-      active: true,
-    });
-  };
+  const makeOnPointerHooks = (x: number, z: number) => {
+    const updateCursor = (event: MouseEvent) => {
+      setCursor({
+        x: event.clientX,
+        y: event.clientY,
+        active: true,
+        mapX: x,
+        mapZ: z,
+      });
+    };
 
-  const onPointerOver = () => {
-    window.addEventListener("mousemove", updateCursor);
-  };
+    const onPointerOver = () => {
+      window.addEventListener("mousemove", updateCursor);
+    };
+  
+    const onPointerOut = () => {
+      window.removeEventListener("mousemove", updateCursor);
+      setCursor({
+        x: 0,
+        y: 0,
+        active: false,
+        mapX: undefined,
+        mapZ: undefined
+      });
+    };
 
-  const onPointerOut = () => {
-    window.removeEventListener("mousemove", updateCursor);
-    setCursor({
-      x: 0,
-      y: 0,
-      active: false,
-    });
-  };
-
+    return {
+      onPointerOver,
+      onPointerOut
+    }
+  }
+  
   // set up lighting
 
   const light = new DirectionalLight(
@@ -196,6 +207,11 @@ export const initialiseBabylonJs = ({
           onPointerOverHexagon(x, z)
         )
       );
+
+      const {
+        onPointerOver,
+        onPointerOut
+      } = makeOnPointerHooks(x, z)
 
       hexagon.actionManager.registerAction(
         new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, onPointerOver)

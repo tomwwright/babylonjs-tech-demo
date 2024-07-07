@@ -4,6 +4,8 @@ export interface CursorState {
   x: number;
   y: number;
   active: boolean;
+  mapX?: number;
+  mapZ?: number;
 }
 
 interface CursorContext extends CursorState {
