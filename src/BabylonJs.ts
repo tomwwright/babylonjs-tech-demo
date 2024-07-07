@@ -30,6 +30,7 @@ import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
 import { useEffect, useRef } from "react";
 import { BabylonJsContext, useBabylonJs } from "./BabylonJsProvider";
+import { parseMapData } from "./MapData";
 
 export const BablylonJs = () => {
   const babylonjs = useBabylonJs();
@@ -159,7 +160,7 @@ export const initialiseBabylonJs = ({
   hexagonMaterial.diffuseColor = Color3.Black();
   hexagonMaterial.alpha = 0;
   const highlightColor = Color3.White();
-  const mapSize = 10;
+  const mapSize = 8;
   const map: Mesh[][] = [];
 
   const setColorAndAlphaAtPosition = (
@@ -406,6 +407,8 @@ export const initialiseBabylonJs = ({
   // load assets
 
   const loadAssets = async () => {
+    const mapDataString = await Tools.LoadFileAsync("/map.txt", false)
+    const mapData = parseMapData(mapDataString)
     const assetArrayBuffer = await Tools.LoadFileAsync(
       "/grass_forest.glb",
       true
@@ -434,29 +437,32 @@ export const initialiseBabylonJs = ({
     for (let x = 0; x < mapSize; ++x) {
       for (let z = 0; z < mapSize; ++z) {
         const hexagon = map[x][z];
-        const forestClone = forest.clone(`forest${x}${z}`, null);
-        // why is this nullable?
-        if (forestClone) {
-          forestClone.setEnabled(true)
-          forestClone.receiveShadows = true;
-          for (const child of forestClone.getChildMeshes()) {
-            child.receiveShadows = true;
-
-            // comment me for reflections
-            mirrorTexture.renderList?.push(child);
+        const mapDataSpace = mapData.spaces[x][z]
+        if(mapDataSpace === "forest") {
+          const forestClone = forest.clone(`forest${x}${z}`, null);
+          // why is this nullable?
+          if (forestClone) {
+            forestClone.setEnabled(true)
+            forestClone.receiveShadows = true;
+            for (const child of forestClone.getChildMeshes()) {
+              child.receiveShadows = true;
+  
+              // comment me for reflections
+              mirrorTexture.renderList?.push(child);
+            }
+  
+            // comment me for shadows
+            shadowGenerator.addShadowCaster(forestClone, true);
+  
+            const rotation = Math.floor(6 * Math.random())
+            forestClone.rotate(Vector3.UpReadOnly, rotation * Math.PI/3)
+  
+            forestClone.position = new Vector3(
+              hexagon.position.x,
+              0,
+              hexagon.position.z
+            );
           }
-
-          // comment me for shadows
-          shadowGenerator.addShadowCaster(forestClone, true);
-
-          const rotation = Math.floor(6 * Math.random())
-          forestClone.rotate(Vector3.UpReadOnly, rotation * Math.PI/3)
-
-          forestClone.position = new Vector3(
-            hexagon.position.x,
-            0,
-            hexagon.position.z
-          );
         }
       }
     }
