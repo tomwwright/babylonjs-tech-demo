@@ -13,6 +13,6 @@ export const ToggleSSAOButton = () => {
   };
 
   return (
-    <button onClick={toggle}>SSAO: {state.ssao}</button>
+    <button style={{pointerEvents: "auto"}} onClick={toggle}>SSAO: {state.ssao}</button>
   );
 };

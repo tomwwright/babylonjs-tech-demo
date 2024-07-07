@@ -7,5 +7,5 @@ interface Props extends PropsWithChildren {
 export const EventButton = ({ event, children }: Props) => {
   const state = useSceneState();
 
-  return <button onClick={() => state.sendEvent(event)}>{children}</button>;
+  return <button style={{pointerEvents: "auto" }} onClick={() => state.sendEvent(event)}>{children}</button>;
 };

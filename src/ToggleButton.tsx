@@ -11,6 +11,6 @@ export const ToggleButton = () => {
   };
 
   return (
-    <button onClick={toggleOnOff}>Toggle: {state.isOn ? "OFF" : "ON"}</button>
+    <button style={{pointerEvents: "auto"}} onClick={toggleOnOff}>Toggle: {state.isOn ? "OFF" : "ON"}</button>
   );
 };

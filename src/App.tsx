@@ -27,9 +27,13 @@ function App() {
               id="header"
               style={{
                 height: "50px",
-                backgroundColor: "green",
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                padding: "4px 16px",
+                alignContent: "center"
               }}
-            />
+            >
+              BabylonJS Tech Demo
+              </div>
 
             <div
               style={{
@@ -43,8 +47,11 @@ function App() {
               <div
                 style={{
                   width: "100px",
-                  backgroundColor: "red",
-                  pointerEvents: "auto",
+                  pointerEvents: "none",
+                  padding: "8px 8px",
+                  display: "flex",
+                  flexDirection: "column-reverse",
+                  gap: "8px"
                 }}
               >
                 <ToggleButton />
@@ -55,17 +62,19 @@ function App() {
                 <EventButton event="toggle-ssao-blur">Toggle SSAO blur</EventButton>
                 <EventButton event="toggle-shadows">Toggle shadows</EventButton>
               </div>
-              <div style={{ width: "100px", backgroundColor: "red" }}></div>
+              <div style={{ width: "100px" }}></div>
             </div>
 
             <div
               id="footer"
               style={{
                 height: "50px",
-                backgroundColor: "green",
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                padding: "4px 16px",
+                alignContent: "center"
               }}
             >
-              <p><FpsCounter /></p>
+              <FpsCounter />
             </div>
           </div>
           <BablylonJs />
