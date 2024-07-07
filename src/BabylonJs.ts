@@ -428,6 +428,7 @@ export const initialiseBabylonJs = ({
     }
     forest.rotate(Vector3.Up(), Math.PI / 6);
     forest.scalingDeterminant = 1.7;
+    forest.setEnabled(false)
 
     // put forests on each space
     for (let x = 0; x < mapSize; ++x) {
@@ -436,6 +437,7 @@ export const initialiseBabylonJs = ({
         const forestClone = forest.clone(`forest${x}${z}`, null);
         // why is this nullable?
         if (forestClone) {
+          forestClone.setEnabled(true)
           forestClone.receiveShadows = true;
           for (const child of forestClone.getChildMeshes()) {
             child.receiveShadows = true;
@@ -446,6 +448,9 @@ export const initialiseBabylonJs = ({
 
           // comment me for shadows
           shadowGenerator.addShadowCaster(forestClone, true);
+
+          const rotation = Math.floor(6 * Math.random())
+          forestClone.rotate(Vector3.UpReadOnly, rotation * Math.PI/3)
 
           forestClone.position = new Vector3(
             hexagon.position.x,
