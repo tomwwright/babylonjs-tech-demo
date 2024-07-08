@@ -396,11 +396,11 @@ export const initialiseBabylonJs = ({
     if (state.isOn) {
       groundMaterial.reflectionTexture = mirrorTexture
       mirrorTexture.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYFRAME
-      groundMaterial.diffuseColor = new Color3(0.2, 0.2, 0.3);
+      groundMaterial.emissiveColor = Color3.BlackReadOnly
     } else {
       groundMaterial.reflectionTexture = null;
       mirrorTexture.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE
-      groundMaterial.diffuseColor = new Color3(0.7, 0.7, 0.9);
+      groundMaterial.emissiveColor = new Color3(0.3, 0.3, 0.7);
     }
   });
 
