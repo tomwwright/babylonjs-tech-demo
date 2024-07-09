@@ -146,7 +146,7 @@ export const initialiseBabylonJs = ({
   // set up map of hexagons
 
   const radius = 1;
-  const spacing = 1.02;
+  const spacing = 1.01;
   const spacingX = radius * spacing * 1.5;
   const spacingZ = radius * spacing * Math.sqrt(3);
 
@@ -361,7 +361,7 @@ export const initialiseBabylonJs = ({
   const height = maxZ + 2 * visibleSurroundingDistance;
 
   const ground = MeshBuilder.CreateGround("ground", { width, height });
-  ground.position = new Vector3(maxX / 2, 0, maxZ / 2);
+  ground.position = new Vector3(maxX / 2, 0.1, maxZ / 2);
   ground.receiveShadows = true;
   const groundMaterial = new StandardMaterial("ground");
   const mirrorTexture = new MirrorTexture("mirror", { ratio: 0.25 }, scene);
