@@ -409,60 +409,66 @@ export const initialiseBabylonJs = ({
   const loadAssets = async () => {
     const mapDataString = await Tools.LoadFileAsync("/map.txt", false)
     const mapData = parseMapData(mapDataString)
-    const assetArrayBuffer = await Tools.LoadFileAsync(
-      "/grass_forest.glb",
-      true
-    );
-    const assetBlob = new Blob([assetArrayBuffer]);
-    const assetUrl = URL.createObjectURL(assetBlob);
 
-    await SceneLoader.AppendAsync(
-      assetUrl,
-      undefined,
-      scene,
-      undefined,
-      ".glb"
-    );
-
-    const forest = scene.getMeshByName("__root__");
-    if (!forest) {
-      console.log("unable to find loaded forest mesh!");
-      return;
+    const loadGlb = async (filename: string) => {
+      const imported = await SceneLoader.ImportMeshAsync(
+        "",
+        filename,
+        undefined,
+        undefined,
+        undefined,
+        ".glb"
+      )
+  
+      const mesh = imported.meshes.find(m => m.name === "__root__")
+      if(mesh) {
+        return mesh
+      }
+      throw new Error("No __root__ in loaded .glb") 
     }
-    forest.rotate(Vector3.Up(), Math.PI / 6);
-    forest.scalingDeterminant = 1.7;
-    forest.setEnabled(false)
+    
+    const meshes = {
+      forest: await loadGlb("/grass-forest.glb"),
+      grass: await loadGlb("/grass.glb"),
+      sheep: await loadGlb("/building-sheep.glb"),
+    }
 
-    // put forests on each space
+    for(const mesh of Object.values(meshes)) {
+      mesh.rotate(Vector3.Up(), Math.PI / 6);
+      mesh.scalingDeterminant = 1.7;
+      mesh.setEnabled(false)
+    }
+
+    // populate spaces
     for (let x = 0; x < mapSize; ++x) {
       for (let z = 0; z < mapSize; ++z) {
         const hexagon = map[x][z];
         const mapDataSpace = mapData.spaces[x][z]
-        if(mapDataSpace === "forest") {
-          const forestClone = forest.clone(`forest${x}${z}`, null);
-          // why is this nullable?
-          if (forestClone) {
-            forestClone.setEnabled(true)
-            forestClone.receiveShadows = true;
-            for (const child of forestClone.getChildMeshes()) {
-              child.receiveShadows = true;
-  
-              // comment me for reflections
-              mirrorTexture.renderList?.push(child);
-            }
-  
-            // comment me for shadows
-            shadowGenerator.addShadowCaster(forestClone, true);
-  
-            const rotation = Math.floor(6 * Math.random())
-            forestClone.rotate(Vector3.UpReadOnly, rotation * Math.PI/3)
-  
-            forestClone.position = new Vector3(
-              hexagon.position.x,
-              0,
-              hexagon.position.z
-            );
+        if(mapDataSpace === "empty") {
+          continue;
+        }
+
+        const mesh = meshes[mapDataSpace]
+
+        const clone = mesh.clone(`${mapDataSpace}${x}${z}`, null);
+        if (clone) {
+          scene.addMesh(clone, true)
+          clone.setEnabled(true)
+          clone.receiveShadows = true;
+          for (const child of clone.getChildMeshes()) {
+            child.receiveShadows = true;
+            mirrorTexture.renderList?.push(child);
           }
+
+          shadowGenerator.addShadowCaster(clone, true);
+          const rotation = Math.floor(6 * Math.random())
+          clone.rotate(Vector3.UpReadOnly, rotation * Math.PI/3)
+
+          clone.position = new Vector3(
+            hexagon.position.x,
+            0,
+            hexagon.position.z
+          );
         }
       }
     }
