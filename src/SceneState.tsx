@@ -3,7 +3,7 @@ import * as React from "react";
 import { useCallback } from "react";
 
 export interface SceneState {
-  ssao: "enabled" | "disabled" | "ssao-only"
+  ssao: "on" | "off" | "only"
   isOn: boolean;
 }
 
@@ -15,7 +15,7 @@ interface SceneContext extends SceneState {
 }
 
 const defaultState = {
-  ssao: "enabled",
+  ssao: "on",
   isOn: true,
 } satisfies SceneState;
 

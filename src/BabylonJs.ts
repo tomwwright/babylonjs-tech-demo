@@ -534,7 +534,7 @@ export const initialiseBabylonJs = ({
     currentSSAO = state.ssao
     // order of cases here is specific, not good code >:(
     switch(state.ssao) {
-      case "enabled":
+      case "on":
         scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline(
             "ssao",
             camera
@@ -545,14 +545,14 @@ export const initialiseBabylonJs = ({
         camera
       );
         break;
-      case "ssao-only":
+      case "only":
       scene.postProcessRenderPipelineManager.disableEffectInPipeline(
         "ssao",
         ssao.SSAOCombineRenderEffect,
         camera
       );
         break;
-      case "disabled":
+      case "off":
         scene.postProcessRenderPipelineManager.detachCamerasFromRenderPipeline(
           "ssao",
           camera
