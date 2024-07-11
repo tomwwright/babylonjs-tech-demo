@@ -54,15 +54,23 @@ function App() {
                   gap: "8px"
                 }}
               >
-                <ToggleButton />
                 <EventButton event="rotate-left">Rotate left</EventButton>
                 <EventButton event="rotate-right">Rotate right</EventButton>
+              </div>
+              <div style={{
+                width: "100px",
+                pointerEvents: "none",
+                padding: "8px 8px",
+                display: "flex",
+                flexDirection: "column-reverse",
+                gap: "8px"
+               }}>
+                <ToggleButton />
                 <EventButton event="toggle-hardware-scaling-level">Cycle scaling</EventButton>
                 <ToggleSSAOButton />
                 <EventButton event="toggle-ssao-blur">Toggle SSAO blur</EventButton>
                 <EventButton event="toggle-shadows">Toggle shadows</EventButton>
-              </div>
-              <div style={{ width: "100px" }}></div>
+               </div>
             </div>
 
             <div
