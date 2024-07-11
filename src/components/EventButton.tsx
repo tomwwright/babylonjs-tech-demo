@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { useSceneState } from "./SceneState";
+import { useSceneState } from "../SceneState";
 
 interface Props extends PropsWithChildren {
   event: string;
@@ -7,5 +7,12 @@ interface Props extends PropsWithChildren {
 export const EventButton = ({ event, children }: Props) => {
   const state = useSceneState();
 
-  return <button style={{pointerEvents: "auto" }} onClick={() => state.sendEvent(event)}>{children}</button>;
+  return (
+    <button
+      style={{ pointerEvents: "auto" }}
+      onClick={() => state.sendEvent(event)}
+    >
+      {children}
+    </button>
+  );
 };

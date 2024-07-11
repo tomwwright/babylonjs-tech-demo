@@ -1,4 +1,4 @@
-import { useCursor } from "./Cursor";
+import { useCursor } from "../Cursor";
 
 export const Tooltip = () => {
   const cursor = useCursor();
@@ -7,7 +7,7 @@ export const Tooltip = () => {
     return null;
   }
 
-  const text = `(${cursor.mapX}, ${cursor.mapZ})`
+  const text = `(${cursor.mapX}, ${cursor.mapZ})`;
 
   return (
     <div

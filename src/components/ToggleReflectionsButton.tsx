@@ -1,4 +1,4 @@
-import { useSceneState } from "./SceneState";
+import { useSceneState } from "../SceneState";
 
 export const ToggleReflectionsButton = () => {
   const state = useSceneState();
@@ -11,6 +11,8 @@ export const ToggleReflectionsButton = () => {
   };
 
   return (
-    <button style={{pointerEvents: "auto"}} onClick={toggleOnOff}>Reflections ({state.reflectionsEnabled ? "on" : "off"})</button>
+    <button style={{ pointerEvents: "auto" }} onClick={toggleOnOff}>
+      Reflections ({state.reflectionsEnabled ? "on" : "off"})
+    </button>
   );
 };

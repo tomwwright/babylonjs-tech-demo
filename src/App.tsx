@@ -1,93 +1,47 @@
 import { BablylonJs } from "./BabylonJs";
 import { CursorProvider } from "./Cursor";
-import { Tooltip } from "./Tooltip";
+import { Tooltip } from "./components/Tooltip";
 import { SceneStateProvider } from "./SceneState";
-import { ToggleReflectionsButton } from "./ToggleReflectionsButton";
+import { ToggleReflectionsButton } from "./components/ToggleReflectionsButton";
 import { BabylonJsProvider } from "./BabylonJsProvider";
-import { EventButton } from "./EventButton";
-import { ToggleSSAOButton } from "./ToggleSSAOButton";
-import { FpsCounter } from "./FpsCounter";
-import { ToggleScalingLevelButton } from "./ToggleScalingLevelButton";
-import { ToggleSSAOBlurButton } from "./ToggleSSAOBlurButton";
-import { ToggleShadowsButton } from "./ToggleShadowsButton";
+import { EventButton } from "./components/EventButton";
+import { ToggleSSAOButton } from "./components/ToggleSSAOButton";
+import { FpsCounter } from "./components/FpsCounter";
+import { ToggleScalingLevelButton } from "./components/ToggleScalingLevelButton";
+import { ToggleSSAOBlurButton } from "./components/ToggleSSAOBlurButton";
+import { ToggleShadowsButton } from "./components/ToggleShadowsButton";
+import {
+  Footer,
+  Frame,
+  Header,
+  Sidebar,
+  SidebarContainer,
+} from "./components/Frame";
 
 function App() {
   return (
     <BabylonJsProvider>
       <CursorProvider>
         <SceneStateProvider>
-          <div
-            style={{
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              pointerEvents: "none",
-            }}
-          >
-            <div
-              id="header"
-              style={{
-                height: "50px",
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                padding: "4px 16px",
-                alignContent: "center"
-              }}
-            >
-              BabylonJS Tech Demo
-              </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "stretch",
-                flex: "auto",
-              }}
-            >
-              <div
-                style={{
-                  width: "140px",
-                  pointerEvents: "none",
-                  padding: "8px 8px",
-                  display: "flex",
-                  flexDirection: "column-reverse",
-                  gap: "8px"
-                }}
-              >
+          <Frame>
+            <Header>BabylonJS Tech Demo</Header>
+            <SidebarContainer>
+              <Sidebar>
                 <EventButton event="rotate-left">Rotate left</EventButton>
                 <EventButton event="rotate-right">Rotate right</EventButton>
-              </div>
-              <div style={{
-                width: "140px",
-                pointerEvents: "none",
-                padding: "8px 8px",
-                display: "flex",
-                flexDirection: "column-reverse",
-                gap: "8px"
-               }}>
+              </Sidebar>
+              <Sidebar>
                 <ToggleReflectionsButton />
                 <ToggleScalingLevelButton />
                 <ToggleSSAOButton />
                 <ToggleSSAOBlurButton />
                 <ToggleShadowsButton />
-               </div>
-            </div>
-
-            <div
-              id="footer"
-              style={{
-                height: "50px",
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                padding: "4px 16px",
-                alignContent: "center"
-              }}
-            >
+              </Sidebar>
+            </SidebarContainer>
+            <Footer>
               <FpsCounter />
-            </div>
-          </div>
+            </Footer>
+          </Frame>
           <BablylonJs />
         </SceneStateProvider>
         <Tooltip />
