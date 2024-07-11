@@ -2,7 +2,7 @@ import { BablylonJs } from "./BabylonJs";
 import { CursorProvider } from "./Cursor";
 import { Tooltip } from "./Tooltip";
 import { SceneStateProvider } from "./SceneState";
-import { ToggleButton } from "./ToggleButton";
+import { ToggleReflectionsButton } from "./ToggleReflectionsButton";
 import { BabylonJsProvider } from "./BabylonJsProvider";
 import { EventButton } from "./EventButton";
 import { ToggleSSAOButton } from "./ToggleSSAOButton";
@@ -65,7 +65,7 @@ function App() {
                 flexDirection: "column-reverse",
                 gap: "8px"
                }}>
-                <ToggleButton />
+                <ToggleReflectionsButton />
                 <EventButton event="toggle-hardware-scaling-level">Cycle scaling</EventButton>
                 <ToggleSSAOButton />
                 <EventButton event="toggle-ssao-blur">Toggle SSAO blur</EventButton>

@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 export interface SceneState {
   ssao: "on" | "off" | "only"
-  isOn: boolean;
+  reflectionsEnabled: boolean;
 }
 
 interface SceneContext extends SceneState {
@@ -16,7 +16,7 @@ interface SceneContext extends SceneState {
 
 const defaultState = {
   ssao: "on",
-  isOn: true,
+  reflectionsEnabled: true,
 } satisfies SceneState;
 
 const SceneContext = React.createContext<SceneContext>({

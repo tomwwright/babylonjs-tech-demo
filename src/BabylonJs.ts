@@ -393,7 +393,7 @@ export const initialiseBabylonJs = ({
 
   stateObservable.add((state) => {
     console.log("from babylon", state);
-    if (state.isOn) {
+    if (state.reflectionsEnabled) {
       groundMaterial.reflectionTexture = mirrorTexture
       mirrorTexture.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYFRAME
       groundMaterial.emissiveColor = Color3.BlackReadOnly
