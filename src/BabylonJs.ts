@@ -559,10 +559,8 @@ export const initialiseBabylonJs = ({
     }
   })
 
-  eventsObservable.add((event) => {
-    if(event === "toggle-ssao-blur") {
-      ssao.bypassBlur = !ssao.bypassBlur
-    }
+  stateObservable.add(({ ssaoBlurEnabled }) => {
+    ssao.bypassBlur = !ssaoBlurEnabled
   })
   
   console.log("initialised babylonjs!")
