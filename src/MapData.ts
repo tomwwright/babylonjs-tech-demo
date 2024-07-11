@@ -1,5 +1,5 @@
 
-type MapData = {
+export type MapData = {
   rows: number,
   columns: number,
   spaces: Space[][]

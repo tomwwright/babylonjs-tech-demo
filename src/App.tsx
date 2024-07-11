@@ -42,8 +42,14 @@ function App() {
             </Header>
             <SidebarContainer>
               <Sidebar>
-                <EventButton event="rotate-left">Rotate left</EventButton>
-                <EventButton event="rotate-right">Rotate right</EventButton>
+                <EventButton event={{ event: "rotateCamera", payload: "left" }}>
+                  Rotate left
+                </EventButton>
+                <EventButton
+                  event={{ event: "rotateCamera", payload: "right" }}
+                >
+                  Rotate right
+                </EventButton>
               </Sidebar>
               <Sidebar>
                 <ToggleReflectionsButton />

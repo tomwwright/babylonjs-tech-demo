@@ -30,13 +30,14 @@ import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
 import { useEffect, useRef } from "react";
 import { BabylonJsContext, useBabylonJs } from "./BabylonJsProvider";
-import { parseMapData } from "./MapData";
+import { MapData, parseMapData } from "./MapData";
+import { Event } from "./Events";
 
 export const BablylonJs = () => {
   const babylonjs = useBabylonJs();
 
   const { setCursor } = useCursor();
-  const { stateObservable, eventsObservable } = useSceneState();
+  const { stateObservable, eventsObservable, sendEvent } = useSceneState();
 
   const initialised = useRef(false);
 
@@ -46,6 +47,7 @@ export const BablylonJs = () => {
 
       initialiseBabylonJs({
         setCursor,
+        sendEvent,
         stateObservable,
         eventsObservable,
         ...babylonjs,
@@ -58,12 +60,14 @@ export const BablylonJs = () => {
 
 interface InitialiseBabylonJsProps extends BabylonJsContext {
   setCursor: (cursor: CursorState) => void;
+  sendEvent: (event: Event) => void, 
   stateObservable: Observable<SceneState>;
-  eventsObservable: Observable<string>;
+  eventsObservable: Observable<Event>;
 }
 
 export const initialiseBabylonJs = ({
   setCursor,
+  sendEvent,
   stateObservable,
   eventsObservable,
   engine,
@@ -75,19 +79,38 @@ export const initialiseBabylonJs = ({
 
   setInterval(() => {
     const fps = engine.getFps()
-    eventsObservable.notifyObservers(`report-fps;${fps}`)
+    sendEvent({
+      event: "onRenderStats",
+      payload: {
+        fps
+      }
+    })
   }, 2000)
   
   // hovering for tooltip
 
   const makeOnPointerHooks = (x: number, z: number) => {
+
+    let mapData: Nullable<MapData> = null;
+    eventsObservable.add(({ event, payload}) => {
+      if(event === "onMapLoaded") {
+        mapData = payload
+      }
+    })
+
     const updateCursor = (event: MouseEvent) => {
+      let label: string | undefined = undefined;
+      if(mapData) {
+        label = mapData.spaces[x][z]
+        label = `${label.charAt(0).toUpperCase()}${label.substring(1)}`
+      }
       setCursor({
         x: event.clientX,
         y: event.clientY,
         active: true,
         mapX: x,
         mapZ: z,
+        label, 
       });
     };
 
@@ -102,7 +125,8 @@ export const initialiseBabylonJs = ({
         y: 0,
         active: false,
         mapX: undefined,
-        mapZ: undefined
+        mapZ: undefined,
+        label: undefined,
       });
     };
 
@@ -329,14 +353,16 @@ export const initialiseBabylonJs = ({
     );
   };
 
-  eventsObservable.add((event) => {
-    switch (event) {
-      case "rotate-left":
-        rotateCamera(false);
-        break;
-      case "rotate-right":
-        rotateCamera(true);
-        break;
+  eventsObservable.add(({event, payload}) => {
+    if(event === "rotateCamera") {
+      switch (payload) {
+        case "left":
+          rotateCamera(false);
+          break;
+        case "right":
+          rotateCamera(true);
+          break;
+      }
     }
   });
 
@@ -403,6 +429,8 @@ export const initialiseBabylonJs = ({
   const loadAssets = async () => {
     const mapDataString = await Tools.LoadFileAsync("/map.txt", false)
     const mapData = parseMapData(mapDataString)
+
+    sendEvent({ event: "onMapLoaded", payload: mapData })
 
     const loadGlb = async (filename: string) => {
       const imported = await SceneLoader.ImportMeshAsync(

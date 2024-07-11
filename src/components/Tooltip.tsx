@@ -7,7 +7,8 @@ export const Tooltip = () => {
     return null;
   }
 
-  const text = `(${cursor.mapX}, ${cursor.mapZ})`;
+  const label = cursor.label ? `${cursor.label} ` : "";
+  const text = `${label}(${cursor.mapX}, ${cursor.mapZ})`;
 
   return (
     <div
