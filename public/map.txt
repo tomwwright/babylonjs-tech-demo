@@ -2,7 +2,7 @@ ffffffff
 ffffffff
 f_FSgfff
 f__gfSff
-f__ggfff
-fgVff___
+fr_ggfff
+fgVff_r_
 fSFf__fg
-fffff_gg
+fffffrgg

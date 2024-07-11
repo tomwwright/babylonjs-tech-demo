@@ -433,6 +433,7 @@ export const initialiseBabylonJs = ({
       sheep: await loadGlb("/building-sheep.glb"),
       farm: await loadGlb("/building-farm.glb"),
       village: await loadGlb("/building-village.glb"),
+      rocks: await loadGlb("/water-rocks.glb"),
     }
 
     for(const mesh of Object.values(meshes)) {
@@ -440,6 +441,9 @@ export const initialiseBabylonJs = ({
       mesh.scalingDeterminant = 1.7;
       mesh.setEnabled(false)
     }
+    
+    // submerge the included water part of the tile
+    meshes.rocks.position.y -= 0.1
 
     // populate spaces
     for (let x = 0; x < mapSize; ++x) {
@@ -468,7 +472,7 @@ export const initialiseBabylonJs = ({
 
           clone.position = new Vector3(
             hexagon.position.x,
-            0,
+            clone.position.y,
             hexagon.position.z
           );
         }
