@@ -9,6 +9,7 @@ import { ToggleSSAOButton } from "./ToggleSSAOButton";
 import { FpsCounter } from "./FpsCounter";
 import { ToggleScalingLevelButton } from "./ToggleScalingLevelButton";
 import { ToggleSSAOBlurButton } from "./ToggleSSAOBlurButton";
+import { ToggleShadowsButton } from "./ToggleShadowsButton";
 
 function App() {
   return (
@@ -71,7 +72,7 @@ function App() {
                 <ToggleScalingLevelButton />
                 <ToggleSSAOButton />
                 <ToggleSSAOBlurButton />
-                <EventButton event="toggle-shadows">Toggle shadows</EventButton>
+                <ToggleShadowsButton />
                </div>
             </div>
 

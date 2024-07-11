@@ -137,10 +137,8 @@ export const initialiseBabylonJs = ({
   shadowGenerator.depthClamp = false;
   shadowGenerator.shadowMaxZ = 60;
 
-  eventsObservable.add((event) => {
-    if(event === "toggle-shadows") {
-      light.shadowEnabled = !light.shadowEnabled;
-    }
+  stateObservable.add(({ shadowsEnabled}) => {
+    light.shadowEnabled = shadowsEnabled
   })
 
   // set up map of hexagons

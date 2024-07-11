@@ -6,6 +6,7 @@ export interface SceneState {
   ssao: "on" | "off" | "only";
   ssaoBlurEnabled: boolean;
   reflectionsEnabled: boolean;
+  shadowsEnabled: boolean;
   scalingLevel: 1 | 2 | 4;
 }
 
@@ -20,6 +21,7 @@ const defaultState = {
   ssao: "on",
   ssaoBlurEnabled: true,
   reflectionsEnabled: true,
+  shadowsEnabled: true,
   scalingLevel: 1
 } satisfies SceneState;
 
