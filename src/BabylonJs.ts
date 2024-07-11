@@ -238,7 +238,7 @@ export const initialiseBabylonJs = ({
   camera.attachControl(canvas, true);
 
   const maxCameraDistance = 12;
-  camera.radius = 5;
+  camera.radius = 10;
   camera.upperRadiusLimit = maxCameraDistance;
   camera.lowerRadiusLimit = 1.5;
 
@@ -330,7 +330,6 @@ export const initialiseBabylonJs = ({
   };
 
   eventsObservable.add((event) => {
-    console.log("from babylon", event);
     switch (event) {
       case "rotate-left":
         rotateCamera(false);
@@ -362,13 +361,13 @@ export const initialiseBabylonJs = ({
   ground.position = new Vector3(maxX / 2, 0.1, maxZ / 2);
   ground.receiveShadows = true;
   const groundMaterial = new StandardMaterial("ground");
-  const mirrorTexture = new MirrorTexture("mirror", { ratio: 0.25 }, scene);
+  const mirrorTexture = new MirrorTexture("mirror", { ratio: 0.5 }, scene);
   mirrorTexture.mirrorPlane = Plane.FromPositionAndNormal(
     ground.position,
     ground.getFacetNormal(0).scale(-1)
   );
   mirrorTexture.renderList = [skybox];
-  mirrorTexture.adaptiveBlurKernel = 64;
+  mirrorTexture.adaptiveBlurKernel = 24;
   mirrorTexture.noPrePassRenderer = true;
 
   groundMaterial.reflectionTexture = mirrorTexture;
@@ -388,7 +387,6 @@ export const initialiseBabylonJs = ({
   // demo reacting to state changes from react
 
   stateObservable.add((state) => {
-    console.log("from babylon", state);
     if (state.reflectionsEnabled) {
       groundMaterial.reflectionTexture = mirrorTexture
       mirrorTexture.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYFRAME
