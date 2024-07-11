@@ -49,7 +49,7 @@ function App() {
             >
               <div
                 style={{
-                  width: "100px",
+                  width: "140px",
                   pointerEvents: "none",
                   padding: "8px 8px",
                   display: "flex",
@@ -61,7 +61,7 @@ function App() {
                 <EventButton event="rotate-right">Rotate right</EventButton>
               </div>
               <div style={{
-                width: "100px",
+                width: "140px",
                 pointerEvents: "none",
                 padding: "8px 8px",
                 display: "flex",
