@@ -7,6 +7,7 @@ import { BabylonJsProvider } from "./BabylonJsProvider";
 import { EventButton } from "./EventButton";
 import { ToggleSSAOButton } from "./ToggleSSAOButton";
 import { FpsCounter } from "./FpsCounter";
+import { ToggleScalingLevelButton } from "./ToggleScalingLevelButton";
 
 function App() {
   return (
@@ -66,7 +67,7 @@ function App() {
                 gap: "8px"
                }}>
                 <ToggleReflectionsButton />
-                <EventButton event="toggle-hardware-scaling-level">Cycle scaling</EventButton>
+                <ToggleScalingLevelButton />
                 <ToggleSSAOButton />
                 <EventButton event="toggle-ssao-blur">Toggle SSAO blur</EventButton>
                 <EventButton event="toggle-shadows">Toggle shadows</EventButton>

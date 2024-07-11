@@ -380,13 +380,11 @@ export const initialiseBabylonJs = ({
 
   amblientLight.excludedMeshes.push(ground);
 
-  eventsObservable.add((event) => {
-    if(event === "toggle-hardware-scaling-level") {
-      const scalingLevels = [1, 2, 4]
-      const i = scalingLevels.findIndex(level => level === engine.getHardwareScalingLevel())
-      const newHardwareScalingLevel = scalingLevels[(i + 1) % scalingLevels.length]
-      engine.setHardwareScalingLevel(newHardwareScalingLevel)
+  stateObservable.add((state) => {
+    if(state.scalingLevel === engine.getHardwareScalingLevel()) {
+      return;
     }
+    engine.setHardwareScalingLevel(state.scalingLevel)
   });
 
   // demo reacting to state changes from react
@@ -526,7 +524,7 @@ export const initialiseBabylonJs = ({
 
   // SSAO debugging
 
-  let currentSSAO = "enabled"
+  let currentSSAO: SceneState["ssao"] = "on"
   stateObservable.add((state) => {
     if(state.ssao === currentSSAO) {
       return

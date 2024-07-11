@@ -3,8 +3,9 @@ import * as React from "react";
 import { useCallback } from "react";
 
 export interface SceneState {
-  ssao: "on" | "off" | "only"
+  ssao: "on" | "off" | "only";
   reflectionsEnabled: boolean;
+  scalingLevel: 1 | 2 | 4;
 }
 
 interface SceneContext extends SceneState {
@@ -17,6 +18,7 @@ interface SceneContext extends SceneState {
 const defaultState = {
   ssao: "on",
   reflectionsEnabled: true,
+  scalingLevel: 1
 } satisfies SceneState;
 
 const SceneContext = React.createContext<SceneContext>({
