@@ -1,8 +1,8 @@
-FFFFFFFF
-FFFFFFFF
-F_FSGFFF
-F__GFSFF
-F__GGFFF
-FFFFF___
-FSFF__FG
-FFFFF_GG
+ffffffff
+ffffffff
+f_FSgfff
+f__gfSff
+f__ggfff
+fgVff___
+fSFf__fg
+fffff_gg

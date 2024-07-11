@@ -431,6 +431,8 @@ export const initialiseBabylonJs = ({
       forest: await loadGlb("/grass-forest.glb"),
       grass: await loadGlb("/grass.glb"),
       sheep: await loadGlb("/building-sheep.glb"),
+      farm: await loadGlb("/building-farm.glb"),
+      village: await loadGlb("/building-village.glb"),
     }
 
     for(const mesh of Object.values(meshes)) {

@@ -5,7 +5,7 @@ type MapData = {
   spaces: Space[][]
 }
 
-export type Space = "empty" | "grass" | "forest" | "sheep"
+export type Space = "empty" | "grass" | "forest" | "sheep" | "farm" | "village"
 
 export function parseMapData(mapDataString: string): MapData {
   const mapData = mapDataString.trim().split("\n").map(r => r.trim())
@@ -17,12 +17,16 @@ export function parseMapData(mapDataString: string): MapData {
     row => row.split("").map(
       space => {
         switch(space) {
-          case "G":
+          case "g":
             return "grass"
-          case "F":
+          case "f":
             return "forest"
+          case "F":
+            return "farm"
           case "S":
             return "sheep"
+          case "V":
+            return "village"
           case "_":
           default:
             return "empty"
