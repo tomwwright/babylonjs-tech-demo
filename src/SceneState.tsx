@@ -1,5 +1,6 @@
 import { Observable } from "@babylonjs/core";
 import * as React from "react";
+import { useCallback } from "react";
 
 export interface SceneState {
   ssao: "enabled" | "disabled" | "ssao-only"
@@ -9,7 +10,7 @@ export interface SceneState {
 interface SceneContext extends SceneState {
   stateObservable: Observable<SceneState>;
   eventsObservable: Observable<string>;
-  setState: (state: SceneState) => void;
+  setState: (updates: Partial<SceneState>) => void;
   sendEvent: (event: string) => void;
 }
 
@@ -37,10 +38,14 @@ export const SceneStateProvider = ({ children }: React.PropsWithChildren) => {
   );
   const [state, setReactState] = React.useState<SceneState>(defaultState);
 
-  const setState = (state: SceneState) => {
-    stateObservable.notifyObservers(state);
-    setReactState(state);
-  };
+  const setState = useCallback((updates: Partial<SceneState>) => {
+    const updated = {
+      ...state,
+      ...updates
+    }
+    stateObservable.notifyObservers(updated);
+    setReactState(updated);
+  }, [setReactState]);
 
   const sendEvent = (event: string) => {
     eventsObservable.notifyObservers(event);
