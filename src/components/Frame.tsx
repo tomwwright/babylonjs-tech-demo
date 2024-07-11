@@ -23,6 +23,7 @@ export const Header = ({ children }: React.PropsWithChildren) => (
       backgroundColor: "rgba(0, 0, 0, 0.3)",
       padding: "4px 16px",
       alignContent: "center",
+      pointerEvents: "auto",
     }}
   >
     {children}

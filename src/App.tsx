@@ -24,7 +24,22 @@ function App() {
       <CursorProvider>
         <SceneStateProvider>
           <Frame>
-            <Header>BabylonJS Tech Demo</Header>
+            <Header>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span>BabylonJS Tech Demo</span>
+                <a
+                  href="https://github.com/tomwwright/babylonjs-tech-demo"
+                  style={{ color: "white", textDecoration: "underline" }}
+                >
+                  github.com/tomwwright/babylonjs-tech-demo
+                </a>
+              </div>
+            </Header>
             <SidebarContainer>
               <Sidebar>
                 <EventButton event="rotate-left">Rotate left</EventButton>
