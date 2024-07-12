@@ -317,15 +317,15 @@ export const initialiseBabylonJs = ({
   rotate.setEasingFunction(easing);
 
   let currentAnimation: Nullable<Animatable>;
+  const onAnimationEnd = () => {
+    currentAnimation = null;
+  };
+
   const rotateCamera = (isLeft: boolean) => {
     if (currentAnimation) {
       console.error("cannot rotate when already rotating");
       return;
     }
-
-    const onAnimationEnd = () => {
-      currentAnimation = null;
-    };
 
     const start = camera.alpha;
     const amount = Math.PI / 3;
@@ -365,6 +365,15 @@ export const initialiseBabylonJs = ({
       }
     }
   });
+
+  // center camera on map loading
+
+  eventsObservable.add(({ event }) => {
+    if(event === "onMapLoaded") {
+      camera.target = new Vector3(maxX / 3, camera.target.y, maxZ / 2)
+      camera.alpha = Math.PI
+    }
+  })
 
   // reflective ground
 
