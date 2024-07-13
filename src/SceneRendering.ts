@@ -16,6 +16,7 @@ import {
   Plane,
   RenderTargetTexture,
   Scene,
+  ShadowGenerator,
   SSAO2RenderingPipeline,
   StandardMaterial,
   Vector3,
@@ -41,7 +42,7 @@ export class SceneRendering {
 
     const light = new DirectionalLight(
       "light",
-      new Vector3(1, -1, 1).normalize(),
+      new Vector3(-1, -1, -1).normalize(),
       scene,
     )
     light.autoUpdateExtends = true
@@ -54,13 +55,15 @@ export class SceneRendering {
 
     // configure shadows
 
-    const shadowGenerator = new CascadedShadowGenerator(1024, light)
+    const shadowGenerator = new CascadedShadowGenerator(2048, light)
     shadowGenerator.autoCalcDepthBounds = false
     shadowGenerator.bias = 0.01
     shadowGenerator.numCascades = 2
     shadowGenerator.usePercentageCloserFiltering = true
+    shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_MEDIUM
     shadowGenerator.depthClamp = false
     shadowGenerator.shadowMaxZ = 60
+    shadowGenerator.darkness = 0.05
 
     stateObservable.add(({ shadowsEnabled }) => {
       light.shadowEnabled = shadowsEnabled

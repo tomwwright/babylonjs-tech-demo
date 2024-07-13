@@ -31,7 +31,7 @@ export class CameraController {
     camera.upperRadiusLimit = maxCameraDistance
     camera.lowerRadiusLimit = 1.5
 
-    camera.alpha = Math.PI
+    camera.alpha = 0
 
     camera.mapPanning = true
     camera.lowerBetaLimit = cameraAngleDegrees
@@ -84,11 +84,11 @@ export class CameraController {
     events.add(({ event }) => {
       if (event === "onMapLoaded") {
         camera.target = new Vector3(
-          this.maxX / 3,
+          this.maxX * 0.66,
           camera.target.y,
           this.maxZ / 2,
         )
-        camera.alpha = Math.PI
+        camera.alpha = 0
       }
     })
   }
