@@ -5,7 +5,7 @@ export type Event =
   | RotateCameraEvent
   | OnMapLoadedEvent
   | OnRenderStatsEvent
-  | OnHexagonHighlightEvent
+  | OnGridHighlightEvent
 
 export type RotateCameraEvent = {
   event: "rotateCamera"
@@ -24,8 +24,8 @@ export type OnRenderStatsEvent = {
   }
 }
 
-export type OnHexagonHighlightEvent = {
-  event: "onHexagonHighlight"
+export type OnGridHighlightEvent = {
+  event: "onGridHighlight"
   payload: Nullable<{
     x: number
     z: number

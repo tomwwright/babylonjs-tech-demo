@@ -9,7 +9,7 @@ import { Event } from "./Events"
 import { MapLoader } from "./MapLoader"
 import { CameraController } from "./CameraController"
 import { SceneRendering } from "./SceneRendering"
-import { HexagonMarkerController } from "./HexagonMarkerController"
+import { HexagonGridController } from "./HexagonGridController"
 
 export const BablylonJsScene = () => {
   const { scene, camera } = useBabylonJs()
@@ -71,10 +71,10 @@ export const initialiseScene = ({
     }
   }, 500)
 
-  const markers = new HexagonMarkerController(scene, eventsObservable)
+  const grid = new HexagonGridController(scene, eventsObservable)
 
   eventsObservable.add(({ event, payload }) => {
-    if (event == "onHexagonHighlight") {
+    if (event == "onGridHighlight") {
       setCursor({
         active: payload !== null,
         mapX: payload?.x,
@@ -87,16 +87,16 @@ export const initialiseScene = ({
   const cameraController = new CameraController(
     camera,
     eventsObservable,
-    markers.maxX,
-    markers.maxZ,
+    grid.maxX,
+    grid.maxZ,
   )
 
   const rendering = new SceneRendering(
     scene,
     camera,
     stateObservable,
-    markers.maxX,
-    markers.maxZ,
+    grid.maxX,
+    grid.maxZ,
     cameraController.cameraAngleDegrees,
     cameraController.maxCameraDistance,
   )
@@ -109,16 +109,16 @@ export const initialiseScene = ({
     await loader.loadAssets()
     await loader.load(
       "/map.txt",
-      markers.hexagons,
-      markers.mapSize,
+      grid.grid,
+      grid.mapSize,
       rendering.mirrorTexture,
       rendering.shadowGenerator,
     )
     setTimeout(() => {
       loader.load(
         "/map2.txt",
-        markers.hexagons,
-        markers.mapSize,
+        grid.grid,
+        grid.mapSize,
         rendering.mirrorTexture,
         rendering.shadowGenerator,
       )

@@ -13,8 +13,8 @@ import {
 import { Event } from "./Events"
 import { MapData } from "./MapData"
 
-export class HexagonMarkerController {
-  public readonly hexagons: Mesh[][]
+export class HexagonGridController {
+  public readonly grid: Mesh[][]
   private mapData: Nullable<MapData> = null
 
   public readonly radius = 1
@@ -50,28 +50,12 @@ export class HexagonMarkerController {
     hexagonMaterial.specularColor = Color3.Black()
     hexagonMaterial.diffuseColor = Color3.Black()
     hexagonMaterial.alpha = 0
-    const highlightColor = Color3.White()
 
-    this.hexagons = []
-
-    const onPointerOverHexagon = (x: number, z: number) => {
-      for (let i = 0; i < mapSize; ++i) {
-        this.setColorAndAlphaAtPosition(x, i, highlightColor, 0.05)
-        this.setColorAndAlphaAtPosition(i, z, highlightColor, 0.05)
-      }
-      this.setColorAndAlphaAtPosition(x, z, Color3.Green(), 0.05)
-    }
-
-    const onPointerOutHexagon = (x: number, z: number) => {
-      for (let i = 0; i < mapSize; ++i) {
-        this.resetColorAndAlphaAtPosition(x, i)
-        this.resetColorAndAlphaAtPosition(i, z)
-      }
-    }
+    this.grid = []
 
     for (let x = 0; x < mapSize; ++x) {
       const row: Mesh[] = []
-      this.hexagons.push(row)
+      this.grid.push(row)
       for (let z = 0; z < mapSize; ++z) {
         const hexagon = template.clone()
         hexagon.material = hexagonMaterial.clone(`hexagon${x}${z}`)
@@ -84,24 +68,12 @@ export class HexagonMarkerController {
 
         hexagon.actionManager = new ActionManager(scene)
 
-        hexagon.actionManager.registerAction(
-          new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, () =>
-            onPointerOverHexagon(x, z),
-          ),
-        )
-
         const { onPointerOver, onPointerOut } = this.makeOnPointerHooks(x, z)
 
         hexagon.actionManager.registerAction(
           new ExecuteCodeAction(
             ActionManager.OnPointerOverTrigger,
             onPointerOver,
-          ),
-        )
-
-        hexagon.actionManager.registerAction(
-          new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, () =>
-            onPointerOutHexagon(x, z),
           ),
         )
 
@@ -125,7 +97,7 @@ export class HexagonMarkerController {
     color: Color3,
     alpha: number,
   ) {
-    const material = this.hexagons[x][z].material as StandardMaterial
+    const material = this.grid[x][z].material as StandardMaterial
     material.alpha = alpha
     material.diffuseColor = color
   }
@@ -135,16 +107,33 @@ export class HexagonMarkerController {
   }
 
   private makeOnPointerHooks = (x: number, z: number) => {
+    const highlightColor = Color3.White()
+
+    const setHighlight = (x: number, z: number) => {
+      for (let i = 0; i < this.mapSize; ++i) {
+        this.setColorAndAlphaAtPosition(x, i, highlightColor, 0.05)
+        this.setColorAndAlphaAtPosition(i, z, highlightColor, 0.05)
+      }
+      this.setColorAndAlphaAtPosition(x, z, Color3.Green(), 0.05)
+    }
+
+    const unsetHighlight = (x: number, z: number) => {
+      for (let i = 0; i < this.mapSize; ++i) {
+        this.resetColorAndAlphaAtPosition(x, i)
+        this.resetColorAndAlphaAtPosition(i, z)
+      }
+    }
+
     const onPointerOver = () => {
+      setHighlight(x, z)
       let label: string | undefined = undefined
       if (this.mapData) {
         label = this.mapData.spaces[x][z]
         label = `${label.charAt(0).toUpperCase()}${label.substring(1)}`
       }
 
-      console.log("pointer over")
       this.events.notifyObservers({
-        event: "onHexagonHighlight",
+        event: "onGridHighlight",
         payload: {
           x,
           z,
@@ -154,8 +143,9 @@ export class HexagonMarkerController {
     }
 
     const onPointerOut = () => {
+      unsetHighlight(x, z)
       this.events.notifyObservers({
-        event: "onHexagonHighlight",
+        event: "onGridHighlight",
         payload: null,
       })
     }
