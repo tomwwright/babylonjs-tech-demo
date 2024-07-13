@@ -10,6 +10,7 @@ import { MapLoader } from "./MapLoader"
 import { CameraController } from "./CameraController"
 import { SceneRendering } from "./SceneRendering"
 import { HexagonGridController } from "./HexagonGridController"
+import { CursorGridLabelObserver } from "./CursorGridLabelObserver"
 
 export const BablylonJsScene = () => {
   const { scene, camera } = useBabylonJs()
@@ -72,17 +73,7 @@ export const initialiseScene = ({
   }, 500)
 
   const grid = new HexagonGridController(scene, eventsObservable)
-
-  eventsObservable.add(({ event, payload }) => {
-    if (event == "onGridHighlight") {
-      setCursor({
-        active: payload !== null,
-        mapX: payload?.x,
-        mapZ: payload?.z,
-        label: payload?.label,
-      })
-    }
-  })
+  new CursorGridLabelObserver(eventsObservable, setCursor)
 
   const cameraController = new CameraController(
     camera,

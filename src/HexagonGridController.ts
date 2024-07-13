@@ -4,18 +4,15 @@ import {
   ExecuteCodeAction,
   Mesh,
   MeshBuilder,
-  Nullable,
   Observable,
   Scene,
   StandardMaterial,
   Vector3,
 } from "@babylonjs/core"
 import { Event } from "./Events"
-import { MapData } from "./MapData"
 
 export class HexagonGridController {
   public readonly grid: Mesh[][]
-  private mapData: Nullable<MapData> = null
 
   public readonly radius = 1
   public readonly spacing = 1.01
@@ -29,14 +26,6 @@ export class HexagonGridController {
     scene: Scene,
     private readonly events: Observable<Event>,
   ) {
-    // listen for map changes
-
-    events.add(({ event, payload }) => {
-      if (event === "onMapLoaded") {
-        this.mapData = payload
-      }
-    })
-
     // create hexagons
 
     const { radius, spacingX, spacingZ, mapSize } = this
@@ -126,18 +115,12 @@ export class HexagonGridController {
 
     const onPointerOver = () => {
       setHighlight(x, z)
-      let label: string | undefined = undefined
-      if (this.mapData) {
-        label = this.mapData.spaces[x][z]
-        label = `${label.charAt(0).toUpperCase()}${label.substring(1)}`
-      }
 
       this.events.notifyObservers({
         event: "onGridHighlight",
         payload: {
           x,
           z,
-          label,
         },
       })
     }

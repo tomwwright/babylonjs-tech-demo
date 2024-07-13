@@ -29,6 +29,5 @@ export type OnGridHighlightEvent = {
   payload: Nullable<{
     x: number
     z: number
-    label?: string
   }>
 }
