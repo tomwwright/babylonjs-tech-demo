@@ -9,7 +9,6 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 export interface BabylonJsContext {
-  canvas: HTMLCanvasElement;
   engine: Engine;
   scene: Scene;
   camera: ArcRotateCamera;
@@ -28,7 +27,6 @@ export const BabylonJsProvider = ({ children }: React.PropsWithChildren) => {
 
   useEffect(() => {
     const canvas = ref.current;
-    console.log("canvas", canvas);
     if (!canvas) {
       console.error("Unable to locate canvas to initialise BabylonJS");
       return;
@@ -85,6 +83,8 @@ const initialiseBabylonJs = (canvas: HTMLCanvasElement) => {
     scene
   );
 
+  camera.attachControl(canvas, true);
+
   window.addEventListener("keydown", (ev) => {
     // Shift+Ctrl+Alt+I
     if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.keyCode === 73) {
@@ -101,7 +101,6 @@ const initialiseBabylonJs = (canvas: HTMLCanvasElement) => {
   });
 
   return {
-    canvas,
     engine,
     scene,
     camera,

@@ -1,4 +1,4 @@
-import { BablylonJs } from "./BabylonJs";
+import { BablylonJsScene } from "./BabylonJsScene";
 import { CursorProvider } from "./Cursor";
 import { Tooltip } from "./components/Tooltip";
 import { SceneStateProvider } from "./SceneState";
@@ -59,7 +59,7 @@ function App() {
               <FpsCounter />
             </Footer>
           </Frame>
-          <BablylonJs />
+          <BablylonJsScene />
         </SceneStateProvider>
         <Tooltip />
       </CursorProvider>

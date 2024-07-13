@@ -33,7 +33,7 @@ import { BabylonJsContext, useBabylonJs } from "./BabylonJsProvider";
 import { MapData, parseMapData } from "./MapData";
 import { Event } from "./Events";
 
-export const BablylonJs = () => {
+export const BablylonJsScene = () => {
   const babylonjs = useBabylonJs();
 
   const { setCursor } = useCursor();
@@ -45,7 +45,7 @@ export const BablylonJs = () => {
     if (!initialised.current) {
       initialised.current = true;
 
-      initialiseBabylonJs({
+      initialiseScene({
         setCursor,
         sendEvent,
         stateObservable,
@@ -58,23 +58,22 @@ export const BablylonJs = () => {
   return null;
 };
 
-interface InitialiseBabylonJsProps extends BabylonJsContext {
+interface InitialiseSceneProps extends BabylonJsContext {
   setCursor: (cursor: CursorState) => void;
   sendEvent: (event: Event) => void, 
   stateObservable: Observable<SceneState>;
   eventsObservable: Observable<Event>;
 }
 
-export const initialiseBabylonJs = ({
+export const initialiseScene = ({
   setCursor,
   sendEvent,
   stateObservable,
   eventsObservable,
   engine,
-  canvas,
   camera,
   scene,
-}: InitialiseBabylonJsProps) => {
+}: InitialiseSceneProps) => {
   // reporting fps
 
   setInterval(() => {
@@ -258,8 +257,6 @@ export const initialiseBabylonJs = ({
   template.dispose();
 
   // configure camera controls
-
-  camera.attachControl(canvas, true);
 
   const maxCameraDistance = 12;
   camera.radius = 10;
