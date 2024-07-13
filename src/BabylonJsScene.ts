@@ -61,7 +61,7 @@ export const BablylonJsScene = () => {
 };
 
 interface InitialiseSceneProps {
-  setCursor: (cursor: CursorState) => void;
+  setCursor: (cursor: Partial<CursorState>) => void;
   sendEvent: (event: Event) => void, 
   stateObservable: Observable<SceneState>;
   eventsObservable: Observable<Event>;
@@ -105,31 +105,22 @@ export const initialiseScene = ({
       }
     })
 
-    const updateCursor = (event: MouseEvent) => {
+    const onPointerOver = () => {
       let label: string | undefined = undefined;
       if(mapData) {
         label = mapData.spaces[x][z]
         label = `${label.charAt(0).toUpperCase()}${label.substring(1)}`
       }
       setCursor({
-        x: event.clientX,
-        y: event.clientY,
         active: true,
         mapX: x,
         mapZ: z,
         label, 
       });
     };
-
-    const onPointerOver = () => {
-      window.addEventListener("mousemove", updateCursor);
-    };
   
     const onPointerOut = () => {
-      window.removeEventListener("mousemove", updateCursor);
       setCursor({
-        x: 0,
-        y: 0,
         active: false,
         mapX: undefined,
         mapZ: undefined,
