@@ -67,12 +67,11 @@ export class SceneManager {
     this.grid = grid
     this.loader = loader
 
-    const loadAssets = async () => {
+    // trigger async loading of assets and a default map
+    const initialise = async () => {
       await loader.loadAssets()
-      await loader.load("/map.txt")
+      await loader.load("/map-small.txt")
     }
-    loadAssets()
-
-    console.log("initialised babylonjs!")
+    initialise()
   }
 }

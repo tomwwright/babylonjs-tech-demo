@@ -18,6 +18,7 @@ import {
   SidebarContainer,
 } from "./components/Frame"
 import { Flex } from "./components/Flex"
+import { LoadMapButton } from "./components/LoadMapButton"
 
 function App() {
   return (
@@ -59,9 +60,10 @@ function App() {
               <FpsCounter />
               <Flex gap="8px" alignItems="center">
                 <span>Load maps</span>
-                <button>None</button>
-                <button>Map 1</button>
-                <button>Map 2</button>
+                <LoadMapButton filename={undefined}>None</LoadMapButton>
+                <LoadMapButton filename="map-small.txt">Map 1</LoadMapButton>
+                <LoadMapButton filename="map-medium.txt">Map 2</LoadMapButton>
+                <LoadMapButton filename="map-large.txt">Map 3</LoadMapButton>
               </Flex>
             </Footer>
           </Frame>
