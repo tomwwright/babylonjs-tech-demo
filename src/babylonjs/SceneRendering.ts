@@ -21,7 +21,7 @@ import {
   StandardMaterial,
   Vector3,
 } from "@babylonjs/core"
-import { SceneState } from "./SceneState"
+import { SceneState } from "../SceneState"
 
 export class SceneRendering {
   public readonly light: DirectionalLight

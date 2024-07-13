@@ -1,7 +1,7 @@
 import { Observable } from "@babylonjs/core"
 import { Event } from "./Events"
 import { MapData } from "./MapData"
-import { CursorState } from "./Cursor"
+import { CursorState } from "../Cursor"
 
 export class CursorGridLabelObserver {
   private mapData?: MapData

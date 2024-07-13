@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react"
 import { useSceneState } from "../SceneState"
-import { Event } from "../Events"
+import { Event } from "../babylonjs/Events"
 
 interface Props extends PropsWithChildren {
   event: Event

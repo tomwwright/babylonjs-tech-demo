@@ -1,7 +1,7 @@
 import { Observable } from "@babylonjs/core"
 import * as React from "react"
 import { useCallback } from "react"
-import { Event } from "./Events"
+import { Event } from "./babylonjs/Events"
 import { SceneManager } from "./SceneManager"
 
 export interface SceneState {
