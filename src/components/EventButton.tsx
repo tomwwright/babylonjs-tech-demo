@@ -1,12 +1,12 @@
-import { PropsWithChildren } from "react";
-import { useSceneState } from "../SceneState";
-import { Event } from "../Events";
+import { PropsWithChildren } from "react"
+import { useSceneState } from "../SceneState"
+import { Event } from "../Events"
 
 interface Props extends PropsWithChildren {
-  event: Event;
+  event: Event
 }
 export const EventButton = ({ event, children }: Props) => {
-  const state = useSceneState();
+  const state = useSceneState()
 
   return (
     <button
@@ -15,5 +15,5 @@ export const EventButton = ({ event, children }: Props) => {
     >
       {children}
     </button>
-  );
-};
+  )
+}

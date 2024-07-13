@@ -1,14 +1,14 @@
-import { useCursor } from "../Cursor";
+import { useCursor } from "../Cursor"
 
 export const Tooltip = () => {
-  const cursor = useCursor();
+  const cursor = useCursor()
 
   if (!cursor.active) {
-    return null;
+    return null
   }
 
-  const label = cursor.label ? `${cursor.label} ` : "";
-  const text = `${label}(${cursor.mapX}, ${cursor.mapZ})`;
+  const label = cursor.label ? `${cursor.label} ` : ""
+  const text = `${label}(${cursor.mapX}, ${cursor.mapZ})`
 
   return (
     <div
@@ -28,5 +28,5 @@ export const Tooltip = () => {
     >
       {text}
     </div>
-  );
-};
+  )
+}

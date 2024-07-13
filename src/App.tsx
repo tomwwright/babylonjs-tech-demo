@@ -1,23 +1,23 @@
-import { BablylonJsScene } from "./BabylonJsScene";
-import { CursorProvider } from "./Cursor";
-import { Tooltip } from "./components/Tooltip";
-import { SceneStateProvider } from "./SceneState";
-import { ToggleReflectionsButton } from "./components/ToggleReflectionsButton";
-import { BabylonJsProvider } from "./BabylonJsProvider";
-import { EventButton } from "./components/EventButton";
-import { ToggleSSAOButton } from "./components/ToggleSSAOButton";
-import { FpsCounter } from "./components/FpsCounter";
-import { ToggleScalingLevelButton } from "./components/ToggleScalingLevelButton";
-import { ToggleSSAOBlurButton } from "./components/ToggleSSAOBlurButton";
-import { ToggleShadowsButton } from "./components/ToggleShadowsButton";
+import { BablylonJsScene } from "./BabylonJsScene"
+import { CursorProvider } from "./Cursor"
+import { Tooltip } from "./components/Tooltip"
+import { SceneStateProvider } from "./SceneState"
+import { ToggleReflectionsButton } from "./components/ToggleReflectionsButton"
+import { BabylonJsProvider } from "./BabylonJsProvider"
+import { EventButton } from "./components/EventButton"
+import { ToggleSSAOButton } from "./components/ToggleSSAOButton"
+import { FpsCounter } from "./components/FpsCounter"
+import { ToggleScalingLevelButton } from "./components/ToggleScalingLevelButton"
+import { ToggleSSAOBlurButton } from "./components/ToggleSSAOBlurButton"
+import { ToggleShadowsButton } from "./components/ToggleShadowsButton"
 import {
   Footer,
   Frame,
   Header,
   Sidebar,
   SidebarContainer,
-} from "./components/Frame";
-import { Flex } from "./components/Flex";
+} from "./components/Frame"
+import { Flex } from "./components/Flex"
 
 function App() {
   return (
@@ -57,6 +57,12 @@ function App() {
             </SidebarContainer>
             <Footer>
               <FpsCounter />
+              <Flex gap="8px" alignItems="center">
+                <span>Load maps</span>
+                <button>None</button>
+                <button>Map 1</button>
+                <button>Map 2</button>
+              </Flex>
             </Footer>
           </Frame>
           <BablylonJsScene />
@@ -64,7 +70,7 @@ function App() {
         <Tooltip />
       </CursorProvider>
     </BabylonJsProvider>
-  );
+  )
 }
 
-export default App;
+export default App

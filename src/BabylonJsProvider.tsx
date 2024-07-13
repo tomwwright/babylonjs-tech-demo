@@ -4,42 +4,42 @@ import {
   Engine,
   Scene,
   Vector3,
-} from "@babylonjs/core";
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+} from "@babylonjs/core"
+import * as React from "react"
+import { useEffect, useRef, useState } from "react"
 
 export interface BabylonJsContext {
-  engine: Engine;
-  scene: Scene;
-  camera: ArcRotateCamera;
+  engine: Engine
+  scene: Scene
+  camera: ArcRotateCamera
 }
 
 const BabylonJsContext = React.createContext<BabylonJsContext>(
-  {} as BabylonJsContext
-);
+  {} as BabylonJsContext,
+)
 
-export const useBabylonJs = () => React.useContext(BabylonJsContext);
+export const useBabylonJs = () => React.useContext(BabylonJsContext)
 
 export const BabylonJsProvider = ({ children }: React.PropsWithChildren) => {
-  const ref = useRef<HTMLCanvasElement>(null);
+  const ref = useRef<HTMLCanvasElement>(null)
 
-  const [context, setContext] = useState<BabylonJsContext | undefined>();
+  const [context, setContext] = useState<BabylonJsContext | undefined>()
 
   useEffect(() => {
-    const canvas = ref.current;
+    const canvas = ref.current
     if (!canvas) {
-      console.error("Unable to locate canvas to initialise BabylonJS");
-      return;
+      console.error("Unable to locate canvas to initialise BabylonJS")
+      return
     }
 
-    const initialisedContext = initialiseBabylonJs(canvas);
-    setContext(initialisedContext);
+    const initialisedContext = initialiseBabylonJs(canvas)
+    setContext(initialisedContext)
 
     return () => {
-      console.log("Cleaning up BabylonJS engine...");
-      initialisedContext.engine.dispose();
-    };
-  }, [ref]);
+      console.log("Cleaning up BabylonJS engine...")
+      initialisedContext.engine.dispose()
+    }
+  }, [ref])
 
   return (
     <>
@@ -50,12 +50,12 @@ export const BabylonJsProvider = ({ children }: React.PropsWithChildren) => {
         </BabylonJsContext.Provider>
       )}
     </>
-  );
-};
+  )
+}
 
 type BabylonJsCanvasProps = {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
-};
+  canvasRef: React.RefObject<HTMLCanvasElement>
+}
 
 export const BabylonJsCanvas = ({ canvasRef }: BabylonJsCanvasProps) => (
   <canvas
@@ -67,12 +67,12 @@ export const BabylonJsCanvas = ({ canvasRef }: BabylonJsCanvasProps) => (
       zIndex: -1,
     }}
   />
-);
+)
 
 const initialiseBabylonJs = (canvas: HTMLCanvasElement) => {
-  const engine = new Engine(canvas, true);
-  const scene = new Scene(engine);
-  scene.actionManager = new ActionManager();
+  const engine = new Engine(canvas, true)
+  const scene = new Scene(engine)
+  scene.actionManager = new ActionManager()
 
   const camera: ArcRotateCamera = new ArcRotateCamera(
     "Camera",
@@ -80,29 +80,29 @@ const initialiseBabylonJs = (canvas: HTMLCanvasElement) => {
     Math.PI / 2,
     2,
     new Vector3(0, 0.75, 0),
-    scene
-  );
+    scene,
+  )
 
-  camera.attachControl(canvas, true);
+  camera.attachControl(canvas, true)
 
   window.addEventListener("keydown", (ev) => {
     // Shift+Ctrl+Alt+I
     if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.keyCode === 73) {
       if (scene.debugLayer.isVisible()) {
-        scene.debugLayer.hide();
+        scene.debugLayer.hide()
       } else {
-        scene.debugLayer.show();
+        scene.debugLayer.show()
       }
     }
-  });
+  })
 
   engine.runRenderLoop(() => {
-    scene.render();
-  });
+    scene.render()
+  })
 
   return {
     engine,
     scene,
     camera,
-  };
-};
+  }
+}

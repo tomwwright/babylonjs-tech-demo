@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export const Frame = ({ children }: React.PropsWithChildren) => (
   <div
@@ -13,7 +13,7 @@ export const Frame = ({ children }: React.PropsWithChildren) => (
   >
     {children}
   </div>
-);
+)
 
 export const Header = ({ children }: React.PropsWithChildren) => (
   <div
@@ -28,7 +28,7 @@ export const Header = ({ children }: React.PropsWithChildren) => (
   >
     {children}
   </div>
-);
+)
 
 export const SidebarContainer = ({ children }: React.PropsWithChildren) => (
   <div
@@ -42,7 +42,7 @@ export const SidebarContainer = ({ children }: React.PropsWithChildren) => (
   >
     {children}
   </div>
-);
+)
 
 export const Sidebar = ({ children }: React.PropsWithChildren) => (
   <div
@@ -57,7 +57,7 @@ export const Sidebar = ({ children }: React.PropsWithChildren) => (
   >
     {children}
   </div>
-);
+)
 
 export const Footer = ({ children }: React.PropsWithChildren) => (
   <div
@@ -66,9 +66,12 @@ export const Footer = ({ children }: React.PropsWithChildren) => (
       height: "50px",
       backgroundColor: "rgba(0, 0, 0, 0.3)",
       padding: "4px 16px",
-      alignContent: "center",
+      alignItems: "center",
+      display: "flex",
+      justifyContent: "space-between",
+      pointerEvents: "auto",
     }}
   >
     {children}
   </div>
-);
+)

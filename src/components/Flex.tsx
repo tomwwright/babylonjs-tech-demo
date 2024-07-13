@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from "react"
 
 type FlexProps = Pick<
   React.CSSProperties,
@@ -12,7 +12,7 @@ type FlexProps = Pick<
   | "flexWrap"
   | "gap"
   | "justifyContent"
->;
+>
 
 export const Flex = (props: FlexProps & React.PropsWithChildren) => (
   <div
@@ -23,4 +23,4 @@ export const Flex = (props: FlexProps & React.PropsWithChildren) => (
   >
     {props.children}
   </div>
-);
+)

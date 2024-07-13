@@ -1,19 +1,19 @@
-import { MapData } from "./MapData";
+import { MapData } from "./MapData"
 
-export type Event = RotateCameraEvent | OnMapLoadedEvent | OnRenderStatsEvent;
+export type Event = RotateCameraEvent | OnMapLoadedEvent | OnRenderStatsEvent
 
 export type RotateCameraEvent = {
-  event: "rotateCamera",
+  event: "rotateCamera"
   payload: "left" | "right"
 }
 
 export type OnMapLoadedEvent = {
-  event: "onMapLoaded",
+  event: "onMapLoaded"
   payload: MapData
 }
 
 export type OnRenderStatsEvent = {
-  event: "onRenderStats",
+  event: "onRenderStats"
   payload: {
     fps: number
   }
