@@ -33,6 +33,7 @@ import { useBabylonJs } from "./BabylonJsProvider"
 import { MapData } from "./MapData"
 import { Event } from "./Events"
 import { MapLoader } from "./MapLoader"
+import { CameraController } from "./CameraController"
 
 export const BablylonJsScene = () => {
   const { scene, camera } = useBabylonJs()
@@ -256,119 +257,15 @@ export const initialiseScene = ({
 
   // configure camera controls
 
-  const maxCameraDistance = 12
-  camera.radius = 10
-  camera.upperRadiusLimit = maxCameraDistance
-  camera.lowerRadiusLimit = 1.5
-
-  camera.alpha = Math.PI
-
-  camera.mapPanning = true
-  const cameraAngleDegrees = (Math.PI / 180) * 45
-  camera.lowerBetaLimit = cameraAngleDegrees
-  camera.upperBetaLimit = cameraAngleDegrees
-
-  camera.maxZ = 60
-
-  // max camera bounds
-
   const maxX = mapSize * spacingX
   const maxZ = mapSize * spacingZ
 
-  const checkCameraTargetBounds = () => {
-    if (camera.target.x < 0) {
-      camera.target.x = 0
-    }
-    if (camera.target.x > maxX) {
-      camera.target.x = maxX
-    }
-
-    if (camera.target.z < 0) {
-      camera.target.z = 0
-    }
-    if (camera.target.z > maxZ) {
-      camera.target.z = maxZ
-    }
-  }
-
-  scene.actionManager.registerAction(
-    new ExecuteCodeAction(
-      ActionManager.OnEveryFrameTrigger,
-      checkCameraTargetBounds,
-    ),
+  const cameraController = new CameraController(
+    camera,
+    eventsObservable,
+    maxX,
+    maxZ,
   )
-
-  // camera rotation
-
-  const frameRate = 30
-  const rotate = new Animation(
-    "rotation",
-    "alpha",
-    frameRate,
-    Animation.ANIMATIONTYPE_FLOAT,
-  )
-  const easing = new SineEase()
-  easing.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
-  rotate.setEasingFunction(easing)
-
-  let currentAnimation: Nullable<Animatable>
-  const onAnimationEnd = () => {
-    currentAnimation = null
-  }
-
-  const rotateCamera = (isLeft: boolean) => {
-    if (currentAnimation) {
-      console.error("cannot rotate when already rotating")
-      return
-    }
-
-    const start = camera.alpha
-    const amount = Math.PI / 3
-    const end = isLeft ? camera.alpha + amount : camera.alpha - amount
-
-    rotate.setKeys([
-      {
-        frame: 0,
-        value: start,
-      },
-      {
-        frame: frameRate,
-        value: end,
-      },
-    ])
-
-    currentAnimation = scene.beginDirectAnimation(
-      camera,
-      [rotate],
-      0,
-      frameRate,
-      false,
-      2, // 2x speed
-      onAnimationEnd,
-    )
-  }
-
-  eventsObservable.add(({ event, payload }) => {
-    if (event === "rotateCamera") {
-      switch (payload) {
-        case "left":
-          rotateCamera(false)
-          break
-        case "right":
-          rotateCamera(true)
-          break
-      }
-    }
-  })
-
-  // center camera on map loading
-
-  eventsObservable.add(({ event }) => {
-    if (event === "onMapLoaded") {
-      camera.target = new Vector3(maxX / 3, camera.target.y, maxZ / 2)
-      camera.alpha = Math.PI
-    }
-  })
 
   // reflective ground
 
@@ -382,7 +279,9 @@ export const initialiseScene = ({
 
   // sin(A) = perp / hyp
   const visibleSurroundingDistance =
-    Math.sin(cameraAngleDegrees) * maxCameraDistance * 2.25
+    Math.sin(cameraController.cameraAngleDegrees) *
+    cameraController.maxCameraDistance *
+    2.25
 
   const width = maxX + 2 * visibleSurroundingDistance
   const height = maxZ + 2 * visibleSurroundingDistance
