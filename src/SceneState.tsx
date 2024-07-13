@@ -44,9 +44,12 @@ export const SceneStateProvider = ({ children }: React.PropsWithChildren) => {
     new Observable()
   );
   const [state, setReactState] = React.useState<SceneState>(defaultState);
+  const stateRef = React.useRef(state);
 
+  stateRef.current = state; // always reference latest version of state in setState callback
   const setState = useCallback(
     (updates: Partial<SceneState>) => {
+      const state = stateRef.current;
       const updated = {
         ...state,
         ...updates,
