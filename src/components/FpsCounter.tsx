@@ -11,5 +11,5 @@ export const FpsCounter = () => {
     }
   });
 
-  return `FPS: ${fps.toFixed(1)}`;
+  return `FPS ${fps.toFixed(1)}`;
 };

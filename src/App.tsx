@@ -17,6 +17,7 @@ import {
   Sidebar,
   SidebarContainer,
 } from "./components/Frame";
+import { Flex } from "./components/Flex";
 
 function App() {
   return (
@@ -25,12 +26,7 @@ function App() {
         <SceneStateProvider>
           <Frame>
             <Header>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
+              <Flex justifyContent="space-between">
                 <span>BabylonJS Tech Demo</span>
                 <a
                   href="https://github.com/tomwwright/babylonjs-tech-demo"
@@ -38,7 +34,7 @@ function App() {
                 >
                   github.com/tomwwright/babylonjs-tech-demo
                 </a>
-              </div>
+              </Flex>
             </Header>
             <SidebarContainer>
               <Sidebar>
