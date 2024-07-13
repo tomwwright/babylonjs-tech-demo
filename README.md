@@ -1,30 +1,54 @@
-# React + TypeScript + Vite
+# BabylonJS + React Tech Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project demonstrates a combination of [BabylonJS](https://github.com/BabylonJS/Babylon.js) for 3D rendering with [React](https://react.dev/) for UI rendering. The tech demo renders a hexagon grid with rotating and panning camera.
 
-Currently, two official plugins are available:
+![Screenshot](./docs/screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Implemented features
 
-## Expanding the ESLint configuration
+- [Directional light](https://doc.babylonjs.com/features/featuresDeepDive/lights/lights_introduction#the-directional-light) with shadows using [cascaded shadow maps](https://doc.babylonjs.com/features/featuresDeepDive/lights/shadows_csm)
+- Reflections using [mirror texture](https://doc.babylonjs.com/features/featuresDeepDive/materials/using/reflectionTexture#mirrortexture)
+- [Depth of field](https://doc.babylonjs.com/features/featuresDeepDive/postProcesses/defaultRenderingPipeline#depth-of-field)
+- [Screen-space ambient occlusion](https://doc.babylonjs.com/features/featuresDeepDive/postProcesses/SSAORenderPipeline) (SSAO)
+- [Asset loading](https://doc.babylonjs.com/features/featuresDeepDive/importers/loadingFileTypes#how-to-use-scene-loader) from `.glb`
+- Two-way integration with React using a combination of [useState](https://react.dev/reference/react/useState), [useRef](https://react.dev/reference/react/useRef), and [Observable](https://doc.babylonjs.com/features/featuresDeepDive/events/observables)
+  - Buttons can send events that can be responded to by BabylonJS, and vice-versa
+  - BabylonJS can modify state used by React render via React `useState` hooks that are exposed
+  - BabylonJS cleans up on dismount
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Integration with React
 
-- Configure the top-level `parserOptions` property like this:
+BabylonJS is initialised within React component tree and provided with [useContext](https://react.dev/reference/react/useContext). _See [`BabylonJsProvider`](./src/BabylonJsProvider.tsx)_
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-}
+The bulk of the BabylonJS rendering setup is then configured further down the component tree. _See [`SceneManager`](./src/SceneManager.ts) and [`SceneRendering`](./src/babylonjs/SceneRendering.ts)_
+
+Handling of assets and the hex grid is maintained in their own classes and exposed via the scene manager. _See [`HexagonGridController`](./src/babylonjs/HexagonGridController.ts) and [`MapLoader`](./src/babylonjs/MapLoader.ts)_
+
+React elements can interact with BabylonJS via React state. _See [`SceneManager` exposed via `setState`](./src/SceneManager.ts) and [accessed by `LoadMapButton`](./src/components/LoadMapButton.tsx) to trigger map loading_
+
+Communication between React and BabylonJS is also facilitated by events. _See [`CameraController` listens to `onMapLoaded` and `rotateCamera` events](./src/babylonjs/CameraController.ts) and [`FpsCounter` listens to `onRenderStats` events to display FPS](./src/components/FpsCounter.tsx)_
+
+## Assets by Kenney
+
+Thanks to [kenney.nl](https://kenney.nl/) for great assets to be able to develop with.
+
+## Installing and running
+
+Install dependencies with `pnpm`
+
+```sh
+pnpm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Run local development server
+
+```
+pnpm dev
+```
+
+Linting using `prettier` and `eslint`
+
+```
+pnpm lint
+pnpm lint:fix
+```
