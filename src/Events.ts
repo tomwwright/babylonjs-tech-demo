@@ -1,6 +1,11 @@
+import { Nullable } from "@babylonjs/core"
 import { MapData } from "./MapData"
 
-export type Event = RotateCameraEvent | OnMapLoadedEvent | OnRenderStatsEvent
+export type Event =
+  | RotateCameraEvent
+  | OnMapLoadedEvent
+  | OnRenderStatsEvent
+  | OnHexagonHighlightEvent
 
 export type RotateCameraEvent = {
   event: "rotateCamera"
@@ -17,4 +22,13 @@ export type OnRenderStatsEvent = {
   payload: {
     fps: number
   }
+}
+
+export type OnHexagonHighlightEvent = {
+  event: "onHexagonHighlight"
+  payload: Nullable<{
+    x: number
+    z: number
+    label?: string
+  }>
 }
