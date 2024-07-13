@@ -37,7 +37,7 @@ export const SceneManagerComponent = () => {
         sceneManager,
       })
     }
-  }, [scene, camera, stateObservable, eventsObservable, setCursor])
+  }, [scene, camera, stateObservable, eventsObservable, setCursor, setState])
 
   return null
 }

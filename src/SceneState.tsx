@@ -57,7 +57,7 @@ export const SceneStateProvider = ({ children }: React.PropsWithChildren) => {
       stateObservable.notifyObservers(updated)
       setReactState(updated)
     },
-    [setReactState],
+    [stateObservable, setReactState],
   )
 
   const sendEvent = (event: Event) => {
