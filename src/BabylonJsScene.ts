@@ -80,15 +80,20 @@ export const initialiseScene = ({
 }: InitialiseSceneProps) => {
   // reporting fps
 
+  let fpsSamples: number[] = []
   setInterval(() => {
-    const fps = scene.getEngine().getFps()
-    sendEvent({
-      event: "onRenderStats",
-      payload: {
-        fps
-      }
-    })
-  }, 2000)
+    fpsSamples.push(scene.getEngine().getFps())
+    if(fpsSamples.length > 5) {
+      const fps = fpsSamples.reduce((sum, i) => sum + i, 0) / fpsSamples.length
+      sendEvent({
+        event: "onRenderStats",
+        payload: {
+          fps
+        }
+      })
+      fpsSamples = []
+    }
+  }, 500)
   
   // hovering for tooltip
 
