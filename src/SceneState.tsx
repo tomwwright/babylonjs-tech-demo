@@ -2,7 +2,7 @@ import { Observable } from "@babylonjs/core"
 import * as React from "react"
 import { useCallback } from "react"
 import { Event } from "./Events"
-import { TechDemoSceneManager } from "./TechDemoSceneManager"
+import { SceneManager } from "./SceneManager"
 
 export interface SceneState {
   ssao: "on" | "off" | "only"
@@ -10,7 +10,7 @@ export interface SceneState {
   reflectionsEnabled: boolean
   shadowsEnabled: boolean
   scalingLevel: 1 | 2 | 4
-  sceneManager?: TechDemoSceneManager
+  sceneManager?: SceneManager
 }
 
 interface SceneContext extends SceneState {

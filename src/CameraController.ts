@@ -91,14 +91,6 @@ export class CameraController {
         camera.alpha = Math.PI
       }
     })
-
-    // reset bounds on grid resizing
-
-    events.add(({ event, payload }) => {
-      if (event === "onGridResize") {
-        this.setBounds(payload.maxX, payload.maxZ)
-      }
-    })
   }
 
   public setBounds(maxX: number, maxZ: number) {

@@ -1,12 +1,9 @@
 import {
   AbstractMesh,
-  Mesh,
-  MirrorTexture,
   Nullable,
   Observable,
   Scene,
   SceneLoader,
-  ShadowGenerator,
   Tools,
   TransformNode,
   Vector3,
@@ -14,6 +11,7 @@ import {
 import { MapData, parseMapData } from "./MapData"
 import { Event } from "./Events"
 import { HexagonGridController } from "./HexagonGridController"
+import { SceneRendering } from "./SceneRendering"
 
 type AssetMeshes = {
   forest: AbstractMesh
@@ -32,6 +30,7 @@ export class MapLoader {
     private scene: Scene,
     private events: Observable<Event>,
     private grid: HexagonGridController,
+    private rendering: SceneRendering,
   ) {}
 
   public get isLoading(): boolean {
@@ -88,26 +87,18 @@ export class MapLoader {
     this.mapNode = null
   }
 
-  public async load(
-    filename: string,
-    mirrorTexture: MirrorTexture,
-    shadowGenerator: ShadowGenerator,
-  ) {
+  public async load(filename: string) {
     if (this.isLoading) {
       throw new Error("Currently loading map")
     }
 
-    this.loadingMap = this.loadMap(filename, mirrorTexture, shadowGenerator)
+    this.loadingMap = this.loadMap(filename)
     const mapData = await this.loadingMap
     this.loadingMap = undefined
     this.events.notifyObservers({ event: "onMapLoaded", payload: mapData })
   }
 
-  private async loadMap(
-    filename: string,
-    mirrorTexture: MirrorTexture,
-    shadowGenerator: ShadowGenerator,
-  ) {
+  private async loadMap(filename: string) {
     if (this.mapNode) {
       this.dispose()
     }
@@ -139,10 +130,10 @@ export class MapLoader {
           clone.receiveShadows = true
           for (const child of clone.getChildMeshes()) {
             child.receiveShadows = true
-            mirrorTexture.renderList?.push(child)
+            this.rendering.mirrorTexture.renderList?.push(child)
           }
 
-          shadowGenerator.addShadowCaster(clone, true)
+          this.rendering.shadowGenerator.addShadowCaster(clone, true)
           const rotation = Math.floor(6 * Math.random())
           clone.rotate(Vector3.UpReadOnly, (rotation * Math.PI) / 3)
 

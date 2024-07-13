@@ -1,4 +1,4 @@
-import { BablylonJsScene } from "./BabylonJsScene"
+import { SceneManagerComponent } from "./SceneManager"
 import { CursorProvider } from "./Cursor"
 import { Tooltip } from "./components/Tooltip"
 import { SceneStateProvider } from "./SceneState"
@@ -65,7 +65,7 @@ function App() {
               </Flex>
             </Footer>
           </Frame>
-          <BablylonJsScene />
+          <SceneManagerComponent />
         </SceneStateProvider>
         <Tooltip />
       </CursorProvider>
