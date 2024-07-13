@@ -25,16 +25,18 @@ import {
   MirrorTexture,
   Plane,
   RenderTargetTexture,
+  ArcRotateCamera,
+  Scene,
 } from "@babylonjs/core";
 import { CursorState, useCursor } from "./Cursor";
 import { SceneState, useSceneState } from "./SceneState";
 import { useEffect, useRef } from "react";
-import { BabylonJsContext, useBabylonJs } from "./BabylonJsProvider";
+import { useBabylonJs } from "./BabylonJsProvider";
 import { MapData, parseMapData } from "./MapData";
 import { Event } from "./Events";
 
 export const BablylonJsScene = () => {
-  const babylonjs = useBabylonJs();
+  const { scene, camera } = useBabylonJs();
 
   const { setCursor } = useCursor();
   const { stateObservable, eventsObservable, sendEvent } = useSceneState();
@@ -50,19 +52,22 @@ export const BablylonJsScene = () => {
         sendEvent,
         stateObservable,
         eventsObservable,
-        ...babylonjs,
+        scene,
+        camera
       });
     }
-  }, [babylonjs, stateObservable, eventsObservable, setCursor]);
+  }, [scene, camera, stateObservable, eventsObservable, setCursor]);
 
   return null;
 };
 
-interface InitialiseSceneProps extends BabylonJsContext {
+interface InitialiseSceneProps {
   setCursor: (cursor: CursorState) => void;
   sendEvent: (event: Event) => void, 
   stateObservable: Observable<SceneState>;
   eventsObservable: Observable<Event>;
+  camera: ArcRotateCamera,
+  scene: Scene
 }
 
 export const initialiseScene = ({
@@ -70,14 +75,13 @@ export const initialiseScene = ({
   sendEvent,
   stateObservable,
   eventsObservable,
-  engine,
   camera,
   scene,
 }: InitialiseSceneProps) => {
   // reporting fps
 
   setInterval(() => {
-    const fps = engine.getFps()
+    const fps = scene.getEngine().getFps()
     sendEvent({
       event: "onRenderStats",
       payload: {
@@ -410,10 +414,10 @@ export const initialiseScene = ({
   amblientLight.excludedMeshes.push(ground);
 
   stateObservable.add((state) => {
-    if(state.scalingLevel === engine.getHardwareScalingLevel()) {
+    if(state.scalingLevel === scene.getEngine().getHardwareScalingLevel()) {
       return;
     }
-    engine.setHardwareScalingLevel(state.scalingLevel)
+    scene.getEngine().setHardwareScalingLevel(state.scalingLevel)
   });
 
   // demo reacting to state changes from react
