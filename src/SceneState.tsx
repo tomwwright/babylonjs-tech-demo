@@ -37,12 +37,10 @@ const SceneContext = React.createContext<SceneContext>({
 export const useSceneState = () => React.useContext(SceneContext);
 
 export const SceneStateProvider = ({ children }: React.PropsWithChildren) => {
-  const [stateObservable] = React.useState<Observable<SceneState>>(
-    new Observable()
+  const { current: stateObservable } = React.useRef(
+    new Observable<SceneState>()
   );
-  const [eventsObservable] = React.useState<Observable<Event>>(
-    new Observable()
-  );
+  const { current: eventsObservable } = React.useRef(new Observable<Event>());
   const [state, setReactState] = React.useState<SceneState>(defaultState);
   const stateRef = React.useRef(state);
 
