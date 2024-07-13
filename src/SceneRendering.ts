@@ -154,9 +154,9 @@ export class SceneRendering {
 
     const ssao = new SSAO2RenderingPipeline("ssao", scene, 1)
     ssao.samples = 16
-    ssao.bilateralSoften = 0.1
-    ssao.totalStrength = 1.0
-    ssao.radius = 0.5
+    ssao.totalStrength = 1.5
+    ssao.radius = 0.2
+    ssao.expensiveBlur = false
 
     scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline(
       "ssao",
