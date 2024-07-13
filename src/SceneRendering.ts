@@ -7,7 +7,9 @@ import {
   DepthOfFieldEffectBlurLevel,
   DirectionalLight,
   ExecuteCodeAction,
+  GroundMesh,
   HemisphericLight,
+  Mesh,
   MeshBuilder,
   MirrorTexture,
   Observable,
@@ -26,14 +28,14 @@ export class SceneRendering {
   public readonly shadowGenerator: CascadedShadowGenerator
   public readonly mirrorTexture: MirrorTexture
 
+  private readonly ground: GroundMesh
+  private readonly skybox: Mesh
+
   constructor(
     scene: Scene,
     camera: ArcRotateCamera,
     stateObservable: Observable<SceneState>,
-    maxX: number,
-    maxZ: number,
-    cameraAngleDegrees: number,
-    maxCameraDistance: number,
+    size: number = 10,
   ) {
     // set up lighting
 
@@ -66,40 +68,33 @@ export class SceneRendering {
 
     // reflective ground
 
-    const skybox = MeshBuilder.CreateBox("skybox", { size: 50 }, scene)
-    skybox.position = new Vector3(maxX / 2, -2, maxZ / 2)
+    this.skybox = MeshBuilder.CreateBox("skybox", { size: 1 }, scene)
+    this.ground = MeshBuilder.CreateGround("ground")
+    this.resize(size)
+
     const skyboxMaterial = new StandardMaterial("skybox", scene)
     skyboxMaterial.emissiveColor = new Color3(0.3, 0.3, 0.7)
     skyboxMaterial.backFaceCulling = false
     skyboxMaterial.disableLighting = true
-    skybox.material = skyboxMaterial
+    this.skybox.material = skyboxMaterial
 
-    // sin(A) = perp / hyp
-    const visibleSurroundingDistance =
-      Math.sin(cameraAngleDegrees) * maxCameraDistance * 2.25
-
-    const width = maxX + 2 * visibleSurroundingDistance
-    const height = maxZ + 2 * visibleSurroundingDistance
-
-    const ground = MeshBuilder.CreateGround("ground", { width, height })
-    ground.position = new Vector3(maxX / 2, 0.1, maxZ / 2)
-    ground.receiveShadows = true
+    this.ground.receiveShadows = true
     const groundMaterial = new StandardMaterial("ground")
     const mirrorTexture = new MirrorTexture("mirror", { ratio: 0.5 }, scene)
     mirrorTexture.mirrorPlane = Plane.FromPositionAndNormal(
-      ground.position,
-      ground.getFacetNormal(0).scale(-1),
+      this.ground.position,
+      this.ground.getFacetNormal(0).scale(-1),
     )
-    mirrorTexture.renderList = [skybox]
+    mirrorTexture.renderList = [this.skybox]
     mirrorTexture.adaptiveBlurKernel = 24
     mirrorTexture.noPrePassRenderer = true
 
     groundMaterial.reflectionTexture = mirrorTexture
     groundMaterial.diffuseColor = new Color3(0.2, 0.2, 0.3)
     groundMaterial.specularColor = new Color3(0.2, 0.2, 0.3)
-    ground.material = groundMaterial
+    this.ground.material = groundMaterial
 
-    ambientLight.excludedMeshes.push(ground)
+    ambientLight.excludedMeshes.push(this.ground)
 
     // toggle rendering resolution
 
@@ -210,5 +205,12 @@ export class SceneRendering {
     this.ambientLight = ambientLight
     this.shadowGenerator = shadowGenerator
     this.mirrorTexture = mirrorTexture
+  }
+
+  public resize(size: number) {
+    this.skybox.position = new Vector3(0, 0, 0)
+    this.skybox.scaling = new Vector3(size, 20, size)
+    this.ground.position = new Vector3(0, 0.1, 0)
+    this.ground.scaling = new Vector3(size, 1, size)
   }
 }

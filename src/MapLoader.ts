@@ -13,6 +13,7 @@ import {
 } from "@babylonjs/core"
 import { MapData, parseMapData } from "./MapData"
 import { Event } from "./Events"
+import { HexagonGridController } from "./HexagonGridController"
 
 type AssetMeshes = {
   forest: AbstractMesh
@@ -30,6 +31,7 @@ export class MapLoader {
   constructor(
     private scene: Scene,
     private events: Observable<Event>,
+    private grid: HexagonGridController,
   ) {}
 
   public get isLoading(): boolean {
@@ -88,8 +90,6 @@ export class MapLoader {
 
   public async load(
     filename: string,
-    map: Mesh[][],
-    mapSize: number,
     mirrorTexture: MirrorTexture,
     shadowGenerator: ShadowGenerator,
   ) {
@@ -97,13 +97,7 @@ export class MapLoader {
       throw new Error("Currently loading map")
     }
 
-    this.loadingMap = this.loadMap(
-      filename,
-      map,
-      mapSize,
-      mirrorTexture,
-      shadowGenerator,
-    )
+    this.loadingMap = this.loadMap(filename, mirrorTexture, shadowGenerator)
     const mapData = await this.loadingMap
     this.loadingMap = undefined
     this.events.notifyObservers({ event: "onMapLoaded", payload: mapData })
@@ -111,8 +105,6 @@ export class MapLoader {
 
   private async loadMap(
     filename: string,
-    map: Mesh[][],
-    mapSize: number,
     mirrorTexture: MirrorTexture,
     shadowGenerator: ShadowGenerator,
   ) {
@@ -125,12 +117,14 @@ export class MapLoader {
     }
 
     const mapData = parseMapData(await Tools.LoadFileAsync(filename, false))
+    const mapSize = mapData.rows
+    this.grid.setSize(mapData.rows)
 
     this.mapNode = new TransformNode("map")
     this.scene.addTransformNode(this.mapNode)
     for (let x = 0; x < mapSize; ++x) {
       for (let z = 0; z < mapSize; ++z) {
-        const hexagon = map[x][z]
+        const hexagon = this.grid.grid[x][z]
         const mapDataSpace = mapData.spaces[x][z]
         if (mapDataSpace === "empty") {
           continue

@@ -6,6 +6,7 @@ export type Event =
   | OnMapLoadedEvent
   | OnRenderStatsEvent
   | OnGridHighlightEvent
+  | OnGridResizeEvent
 
 export type RotateCameraEvent = {
   event: "rotateCamera"
@@ -30,4 +31,12 @@ export type OnGridHighlightEvent = {
     x: number
     z: number
   }>
+}
+
+export type OnGridResizeEvent = {
+  event: "onGridResize"
+  payload: {
+    maxX: number
+    maxZ: number
+  }
 }

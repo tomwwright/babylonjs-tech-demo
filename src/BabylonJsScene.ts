@@ -72,48 +72,36 @@ export const initialiseScene = ({
     }
   }, 500)
 
+  const cameraController = new CameraController(camera, eventsObservable)
+
   const grid = new HexagonGridController(scene, eventsObservable)
   new CursorGridLabelObserver(eventsObservable, setCursor)
 
-  const cameraController = new CameraController(
-    camera,
-    eventsObservable,
-    grid.maxX,
-    grid.maxZ,
-  )
+  const rendering = new SceneRendering(scene, camera, stateObservable)
 
-  const rendering = new SceneRendering(
-    scene,
-    camera,
-    stateObservable,
-    grid.maxX,
-    grid.maxZ,
-    cameraController.cameraAngleDegrees,
-    cameraController.maxCameraDistance,
-  )
+  // resize bounds on grid resizing
+
+  eventsObservable.add(({ event, payload }) => {
+    if (event === "onGridResize") {
+      const sceneSize =
+        (Math.max(payload.maxX, payload.maxZ) +
+          cameraController.maxVisibleSurroundingDistance) *
+        2
+      rendering.resize(sceneSize)
+    }
+  })
 
   // load assets
 
-  const loader = new MapLoader(scene, eventsObservable)
+  const loader = new MapLoader(scene, eventsObservable, grid)
 
   const loadAssets = async () => {
     await loader.loadAssets()
     await loader.load(
       "/map.txt",
-      grid.grid,
-      grid.mapSize,
       rendering.mirrorTexture,
       rendering.shadowGenerator,
     )
-    setTimeout(() => {
-      loader.load(
-        "/map2.txt",
-        grid.grid,
-        grid.mapSize,
-        rendering.mirrorTexture,
-        rendering.shadowGenerator,
-      )
-    }, 4000)
   }
   loadAssets()
 

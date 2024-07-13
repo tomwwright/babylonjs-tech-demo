@@ -12,30 +12,60 @@ import {
 import { Event } from "./Events"
 
 export class HexagonGridController {
-  public readonly grid: Mesh[][]
+  public grid: Mesh[][] = []
 
   public readonly radius = 1
   public readonly spacing = 1.01
   public readonly spacingX = this.radius * this.spacing * 1.5
   public readonly spacingZ = this.radius * this.spacing * Math.sqrt(3)
-  public readonly mapSize = 8
-  public readonly maxX = this.mapSize * this.spacingX
-  public readonly maxZ = this.mapSize * this.spacingZ
+  public maxX = this.mapSize * this.spacingX
+  public maxZ = this.mapSize * this.spacingZ
 
   constructor(
-    scene: Scene,
+    private readonly scene: Scene,
     private readonly events: Observable<Event>,
+    public mapSize = 0,
   ) {
-    // create hexagons
+    this.setSize(mapSize)
+  }
 
+  public setSize(size: number) {
+    this.dispose()
+
+    this.mapSize = size
+    this.maxX = this.mapSize * this.spacingX
+    this.maxZ = this.mapSize * this.spacingZ
+    if (this.mapSize > 0) {
+      this.createGrid()
+      this.events.notifyObservers({
+        event: "onGridResize",
+        payload: {
+          maxX: this.maxX,
+          maxZ: this.maxZ,
+        },
+      })
+    }
+  }
+
+  private dispose() {
+    if (this.grid) {
+      for (const row of this.grid) {
+        for (const cell of row) {
+          cell.dispose()
+        }
+      }
+    }
+  }
+
+  private createGrid() {
     const { radius, spacingX, spacingZ, mapSize } = this
 
     const template = MeshBuilder.CreateCylinder(
       "hexagon",
       { tessellation: 6, height: 1, diameter: radius * 2 },
-      scene,
+      this.scene,
     )
-    const hexagonMaterial = new StandardMaterial("hexagon", scene)
+    const hexagonMaterial = new StandardMaterial("hexagon", this.scene)
     hexagonMaterial.specularColor = Color3.Black()
     hexagonMaterial.diffuseColor = Color3.Black()
     hexagonMaterial.alpha = 0
@@ -55,7 +85,7 @@ export class HexagonGridController {
           z * spacingZ + offsetZ,
         )
 
-        hexagon.actionManager = new ActionManager(scene)
+        hexagon.actionManager = new ActionManager(this.scene)
 
         const { onPointerOver, onPointerOut } = this.makeOnPointerHooks(x, z)
 

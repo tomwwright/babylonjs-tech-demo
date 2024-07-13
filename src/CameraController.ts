@@ -13,29 +13,35 @@ import {
 import { Event } from "./Events"
 
 export class CameraController {
-  public readonly maxCameraDistance = 12
-  public readonly cameraAngleDegrees = (Math.PI / 180) * 45
+  public readonly maxVisibleSurroundingDistance: number
   private currentAnimation: Nullable<Animatable> = null
 
   constructor(
     public readonly camera: ArcRotateCamera,
     events: Observable<Event>,
-    public maxX: number,
-    public maxZ: number,
+    public maxX: number = 10,
+    public maxZ: number = 10,
   ) {
     // configure camera controls
 
+    const maxCameraDistance = 12
+    const cameraAngleDegrees = (Math.PI / 180) * 45
+
     camera.radius = 10
-    camera.upperRadiusLimit = this.maxCameraDistance
+    camera.upperRadiusLimit = maxCameraDistance
     camera.lowerRadiusLimit = 1.5
 
     camera.alpha = Math.PI
 
     camera.mapPanning = true
-    camera.lowerBetaLimit = this.cameraAngleDegrees
-    camera.upperBetaLimit = this.cameraAngleDegrees
+    camera.lowerBetaLimit = cameraAngleDegrees
+    camera.upperBetaLimit = cameraAngleDegrees
 
     camera.maxZ = 60 // different maxZ, this refers to depth
+
+    // sin(A) = perp / hyp
+    this.maxVisibleSurroundingDistance =
+      Math.sin(cameraAngleDegrees) * maxCameraDistance * 2.25
 
     // camera bounds
 
@@ -83,6 +89,14 @@ export class CameraController {
           this.maxZ / 2,
         )
         camera.alpha = Math.PI
+      }
+    })
+
+    // reset bounds on grid resizing
+
+    events.add(({ event, payload }) => {
+      if (event === "onGridResize") {
+        this.setBounds(payload.maxX, payload.maxZ)
       }
     })
   }
