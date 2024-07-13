@@ -445,6 +445,9 @@ export const initialiseScene = ({
   const loadAssets = async () => {
     await loader.loadAssets()
     await loader.load("/map.txt", map, mapSize, mirrorTexture, shadowGenerator)
+    setTimeout(() => {
+      loader.load("/map2.txt", map, mapSize, mirrorTexture, shadowGenerator)
+    }, 4000)
   }
   loadAssets()
 
