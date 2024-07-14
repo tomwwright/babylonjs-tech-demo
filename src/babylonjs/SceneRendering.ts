@@ -212,7 +212,7 @@ export class SceneRendering {
 
   public resize(size: number) {
     this.skybox.position = new Vector3(0, 0, 0)
-    this.skybox.scaling = new Vector3(size, 20, size)
+    this.skybox.scaling = new Vector3(size, 50, size)
     this.ground.position = new Vector3(0, 0.1, 0)
     this.ground.scaling = new Vector3(size, 1, size)
   }

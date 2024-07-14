@@ -24,7 +24,7 @@ export class CameraController {
   ) {
     // configure camera controls
 
-    const maxCameraDistance = 12
+    const maxCameraDistance = 25
     const cameraAngleDegrees = (Math.PI / 180) * 45
 
     camera.radius = 10
@@ -37,7 +37,7 @@ export class CameraController {
     camera.lowerBetaLimit = cameraAngleDegrees
     camera.upperBetaLimit = cameraAngleDegrees
 
-    camera.maxZ = 60 // different maxZ, this refers to depth
+    camera.maxZ = 100 // different maxZ, this refers to depth
 
     // sin(A) = perp / hyp
     this.maxVisibleSurroundingDistance =
