@@ -1,0 +1,19 @@
+# AWS Amplify build settings https://docs.aws.amazon.com/amplify/latest/userguide/build-settings.html
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - "npm install -g pnpm"
+        - "pnpm install"
+    build:
+      commands:
+        - "pnpm build"
+        - 'for file in dist/assets/*.js; do gzip -c "$file" > "${file}.gz"; done'
+  artifacts:
+    baseDirectory: dist
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - "node_modules/**/*"
