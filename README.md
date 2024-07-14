@@ -2,6 +2,9 @@
 
 This project demonstrates a combination of [BabylonJS](https://github.com/BabylonJS/Babylon.js) for 3D rendering with [React](https://react.dev/) for UI rendering. The tech demo renders a hexagon grid with rotating and panning camera.
 
+> [!IMPORTANT]  
+> Check it out here: https://babylonjs.tomwwright.com
+
 ![Screenshot](./docs/screenshot.png)
 
 ## Implemented features
